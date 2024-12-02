@@ -5,7 +5,6 @@ import { useCallback, useState } from "react";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Select from "@component/Select";
-import Hidden from "@component/hidden";
 import Icon from "@component/icon/Icon";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
@@ -17,20 +16,18 @@ import ProductGridView from "@component/products/ProductCard1List";
 import ProductListView from "@component/products/ProductCard9List";
 import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
-import db from "@data/db";
 
-// ==============================================================
 type Props = {
   sortOptions: { label: string; value: string }[];
+  products: any[]; // Receive products from the server
 };
-// ==============================================================
 
-export default function SearchResult({ sortOptions }: Props) {
+export default function SearchResult({ sortOptions, products }: Props) {
   const width = useWindowSize();
   const [view, setView] = useState<"grid" | "list">("grid");
 
   const isTablet = width < 1025;
-  const toggleView = useCallback((v: any) => () => setView(v), []);
+  const toggleView = useCallback((v: "grid" | "list") => () => setView(v), []);
 
   return (
     <>
@@ -42,19 +39,20 @@ export default function SearchResult({ sortOptions }: Props) {
         flexWrap="wrap"
         borderRadius={8}
         alignItems="center"
-        justifyContent="space-between">
+        justifyContent="space-between"
+      >
         <div>
-          <H5>Searching for “ mobile phone ”</H5>
-          <Paragraph color="text.muted">48 results found</Paragraph>
+          <H5>Searching for “ products ”</H5>
+          <Paragraph color="text.muted">{products.length} results found</Paragraph>
         </div>
 
         <FlexBox alignItems="center" flexWrap="wrap">
           <Paragraph color="text.muted" mr="1rem">
-            Short by:
+            Sort by:
           </Paragraph>
 
           <Box flex="1 1 0" mr="1.75rem" minWidth="150px">
-            <Select placeholder="Short by" defaultValue={sortOptions[0]} options={sortOptions} />
+            <Select placeholder="Sort by" defaultValue={sortOptions[0]} options={sortOptions} />
           </Box>
 
           <Paragraph color="text.muted" mr="0.5rem">
@@ -65,7 +63,8 @@ export default function SearchResult({ sortOptions }: Props) {
             <Icon
               variant="small"
               defaultcolor="auto"
-              color={view === "grid" ? "primary" : "inherit"}>
+              color={view === "grid" ? "primary" : "inherit"}
+            >
               grid
             </Icon>
           </IconButton>
@@ -74,7 +73,8 @@ export default function SearchResult({ sortOptions }: Props) {
             <Icon
               variant="small"
               defaultcolor="auto"
-              color={view === "list" ? "primary" : "inherit"}>
+              color={view === "list" ? "primary" : "inherit"}
+            >
               menu
             </Icon>
           </IconButton>
@@ -87,7 +87,8 @@ export default function SearchResult({ sortOptions }: Props) {
                 <IconButton>
                   <Icon>options</Icon>
                 </IconButton>
-              }>
+              }
+            >
               <ProductFilterCard />
             </Sidenav>
           )}
@@ -95,19 +96,15 @@ export default function SearchResult({ sortOptions }: Props) {
       </FlexBox>
 
       <Grid container spacing={6}>
-        {/* <Hidden as={Grid} item lg={3} xs={12} down={1024}>
-          <ProductFilterCard />
-        </Hidden> */}
-
         <Grid item lg={3} xs={12}>
           <ProductFilterCard />
         </Grid>
 
         <Grid item lg={9} xs={12}>
           {view === "grid" ? (
-            <ProductGridView products={db.slice(1, 104)} />
+            <ProductGridView products={products} />
           ) : (
-            <ProductListView products={db.slice(95, 104)} />
+            <ProductListView products={products} />
           )}
         </Grid>
       </Grid>

@@ -1,5 +1,6 @@
 "use client";
 
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
@@ -9,11 +10,10 @@ import useVisibility from "./useVisibility";
 
 import Box from "@component/Box";
 import Icon from "@component/icon/Icon";
-import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
 import TextField from "@component/text-field";
 import { Button, IconButton } from "@component/buttons";
-import { H3, H5, H6, SemiSpan, Small, Span } from "@component/Typography";
+import { H3, H5, H6, SemiSpan } from "@component/Typography";
 // STYLED COMPONENT
 import { StyledRoot } from "./styles";
 import Divide from "./components/Divide";
@@ -26,26 +26,45 @@ export default function Login() {
   const initialValues = { email: "", password: "" };
 
   const formSchema = yup.object().shape({
-    email: yup.string().email("invalid email").required("${path} is required"),
-    password: yup.string().required("${path} is required")
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().required("Password is required"),
   });
 
   const handleFormSubmit = async (values: any) => {
-    router.push("/profile");
-    console.log(values);
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+    });
+
+    if (result?.ok) {
+      // Fetch session to check the user role
+      const response = await fetch("/api/auth/session");
+      const session = await response.json();
+
+      if (session.user.role === "vendor") {
+        router.push("/vendor/products"); // Redirect vendor
+      } else if (session.user.role === "buyer") {
+        router.push("/orders"); // Redirect buyer
+      } else {
+        alert("Unknown role. Please contact support."); // Fallback for unexpected roles
+      }
+    } else {
+      alert("Invalid credentials. Please check your email and password.");
+    }
   };
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues,
     onSubmit: handleFormSubmit,
-    validationSchema: formSchema
+    validationSchema: formSchema,
   });
 
   return (
     <StyledRoot mx="auto" my="2rem" boxShadow="large" borderRadius={8}>
       <form className="content" onSubmit={handleSubmit}>
         <H3 textAlign="center" mb="0.5rem">
-          Welcome To Ecommerce
+          Welcome To Marketplace
         </H3>
 
         <H5 fontWeight="600" fontSize="12px" color="gray.800" textAlign="center" mb="2.25rem">
@@ -60,8 +79,8 @@ export default function Login() {
           onBlur={handleBlur}
           value={values.email}
           onChange={handleChange}
-          placeholder="exmple@mail.com"
-          label="Email or Phone Number"
+          placeholder="example@mail.com"
+          label="Email"
           errorText={touched.email && errors.email}
         />
 
@@ -83,7 +102,8 @@ export default function Login() {
               mr="0.25rem"
               type="button"
               onClick={togglePasswordVisibility}
-              color={passwordVisibility ? "gray.700" : "gray.600"}>
+              color={passwordVisibility ? "gray.700" : "gray.600"}
+            >
               <Icon variant="small" defaultcolor="currentColor">
                 {passwordVisibility ? "eye-alt" : "eye"}
               </Icon>
@@ -100,7 +120,7 @@ export default function Login() {
         <SocialLinks />
 
         <FlexBox justifyContent="center" mb="1.25rem">
-          <SemiSpan>Don’t have account?</SemiSpan>
+          <SemiSpan>Don’t have an account?</SemiSpan>
           <Link href="/signup">
             <H6 ml="0.5rem" borderBottom="1px solid" borderColor="gray.900">
               Sign Up

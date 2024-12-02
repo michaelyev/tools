@@ -9,6 +9,7 @@ import FlexBox from "@component/FlexBox";
 // STYLED COMPONENTS
 import { StyledGrid } from "../styles";
 import { DashboardNavigationWrapper, StyledDashboardNav } from "../styles";
+import LogoutButton from "@component/buttons/LogoutButton";
 
 const linkList = [
   { href: "/vendor/dashboard", title: "Dashboard", iconName: "board" },
@@ -46,6 +47,7 @@ export default function VendorDashboardLayout({ children }: PropsWithChildren) {
             </StyledDashboardNav>
           ))}
         </DashboardNavigationWrapper>
+        <LogoutButton />
       </StyledGrid>
 
       <Grid item lg={9} xs={12}>

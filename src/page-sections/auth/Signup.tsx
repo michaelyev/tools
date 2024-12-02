@@ -48,8 +48,34 @@ export default function Signup() {
   });
 
   const handleFormSubmit = async (values: any) => {
-    console.log(values);
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        }),
+      });
+  
+      if (!response.ok) {
+        const data = await response.json();
+        alert(data.error || "Failed to register. Try again.");
+        return;
+      }
+  
+      alert("Registration successful! You can now log in.");
+      // Переход на страницу логина после успешной регистрации
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   };
+  
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues,
