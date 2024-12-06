@@ -1,24 +1,29 @@
-// FOLLOWING CODES ARE MOCK SERVER IMPLEMENTATION
-// YOU NEED TO BUILD YOUR OWN SERVER
-// IF YOU NEED HELP ABOUT SERVER SIDE IMPLEMENTATION
-// CONTACT US AT support@ui-lib.com
 import type MockAdapter from "axios-mock-adapter";
 import { shuffle } from "lodash";
 import { productList, slugs } from "./data";
 
 export const productApiEndpoints = (Mock: MockAdapter) => {
   Mock.onGet("/api/products").reply(async (config) => {
+    console.log(config.params?.email)
     try {
       const page = config.params?.page || 1;
       const pageSize = config.params?.pageSize || 28;
-      const reversedOrder = productList.reverse();
+      const email = config.params?.email; // Get email from query params
+
+      // Filter products by user's email if provided
+      let filteredProducts = productList;
+      if (email) {
+        filteredProducts = productList.filter((product) => product.shop.user.email === email);
+      }
+
+      const reversedOrder = filteredProducts.reverse();
       const products = reversedOrder.slice((page - 1) * pageSize, page * pageSize);
 
       const meta = {
         page,
         pageSize,
-        total: reversedOrder.length,
-        totalPage: Math.ceil(reversedOrder.length / pageSize)
+        total: filteredProducts.length,
+        totalPage: Math.ceil(filteredProducts.length / pageSize),
       };
 
       return [200, { meta, result: products }];
@@ -28,7 +33,7 @@ export const productApiEndpoints = (Mock: MockAdapter) => {
     }
   });
 
-  // single product based on slug
+  // Single product based on slug
   Mock.onGet("/api/products/slug").reply(async (config) => {
     try {
       if (config?.params?.slug) {
@@ -43,7 +48,7 @@ export const productApiEndpoints = (Mock: MockAdapter) => {
     }
   });
 
-  //all products slug list
+  // All products slug list
   Mock.onGet("/api/products/slug-list").reply(async () => {
     try {
       return [200, slugs];

@@ -18,7 +18,7 @@ import {
 
 // all used products in the bazaar template
 const productList = [
-  ...dbProducts,
+  ...dbProducts/* ,
   ...gift,
   ...gadget,
   ...market1,
@@ -32,7 +32,7 @@ const productList = [
   ...furniture,
   ...healthBeauty,
   ...relatedProducts,
-  ...frequentlyBoughtData,
+  ...frequentlyBoughtData */
 ];
 
 // get the all slugs

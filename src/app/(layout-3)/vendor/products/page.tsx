@@ -8,20 +8,28 @@ import { H5 } from "@component/Typography";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
 import { ProductList } from "@sections/vendor-dashboard/products";
+import { getServerSession } from "next-auth";
+import { authOptions } from '../../../api/auth/[...nextauth]/route' // Update the path to your NextAuth options
 
 // ==============================================================
 type Params = { searchParams: Promise<{ page: string }> };
 // ==============================================================
 
 export default async function Products({ searchParams }: Params) {
+  const session = await getServerSession(authOptions); // Get the session data
+  const email = session?.user?.email; // Extract the user's email from the session
+
   const { page } = await searchParams;
 
   const { data } = await axios.get("/api/products", {
     params: {
+      email, 
       pageSize: 10,
-      page: page ? parseInt(page) : 1
-    }
+      page: page ? parseInt(page) : 1,
+    },
   });
+
+  console.log(email)
 
   return (
     <Fragment>
