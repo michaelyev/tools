@@ -6,27 +6,12 @@ export async function middleware(req) {
 
   console.log("Token from middleware:", token); // Debugging token
 
-  const { pathname } = req.nextUrl;
-
-  // Restrict access to vendor routes
-  if (pathname.startsWith("/vendor") && (!token || token.user.role !== "vendor")) {
+  // If no token is present, redirect unauthenticated users to the login page
+  if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Restrict access to buyer routes
-  const buyerRoutes = [
-    "/orders",
-    "/wish-list",
-    "/support-tickets",
-    "/profile",
-    "/address",
-    "/payment-methods",
-  ];
-  if (buyerRoutes.some((route) => pathname.startsWith(route)) && (!token || token.user.role !== "buyer")) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  return NextResponse.next();
+  return NextResponse.next(); // Allow access to all routes if authenticated
 }
 
 export const config = {

@@ -29,7 +29,6 @@ export const authOptions = {
               id: user._id.toString(),
               email: user.email,
               name: user.name,
-              role: user.role, // Ensure role is included
             };
           }
 
@@ -49,7 +48,6 @@ export const authOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role, // Add role to token
         };
       }
       return token;

@@ -38,17 +38,7 @@ export default function Login() {
     });
 
     if (result?.ok) {
-      // Fetch session to check the user role
-      const response = await fetch("/api/auth/session");
-      const session = await response.json();
-
-      if (session.user.role === "vendor") {
-        router.push("/vendor/products"); // Redirect vendor
-      } else if (session.user.role === "buyer") {
-        router.push("/orders"); // Redirect buyer
-      } else {
-        alert("Unknown role. Please contact support."); // Fallback for unexpected roles
-      }
+      router.push("vendor/dashboard"); // Redirect all users to a common dashboard
     } else {
       alert("Invalid credentials. Please check your email and password.");
     }
