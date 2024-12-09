@@ -25,7 +25,6 @@ export default function PaymentForm() {
   const isMobile = width < 769;
 
   const handleFormSubmit = async (values: any) => {
-    console.log(values);
     router.push("/payment");
   };
 

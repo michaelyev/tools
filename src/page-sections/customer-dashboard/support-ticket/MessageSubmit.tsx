@@ -5,7 +5,6 @@ import { Button } from "@component/buttons";
 
 export default function MessageSubmit() {
   const handleFormSubmit = async (values: any) => {
-    console.log(values);
   };
 
   return (

@@ -1,15 +1,14 @@
 import { Fragment } from "react";
-import axios from "@lib/axios";
-// GLOBAL CUSTOM COMPONENTS
 import Hidden from "@component/hidden";
 import FlexBox from "@component/FlexBox";
 import TableRow from "@component/TableRow";
 import { H5 } from "@component/Typography";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
-// PAGE SECTION COMPONENTS
 import { ProductList } from "@sections/vendor-dashboard/products";
 import { getServerSession } from "next-auth";
-import { authOptions } from '../../../api/auth/[...nextauth]/route' // Update the path to your NextAuth options
+import { authOptions } from '../../../api/auth/[...nextauth]/route'; // Update path if needed
+import { getProducts } from "@utils/data_fetch/allTools";
+import { getVendorProducts } from "@utils/data_fetch/vendorPostedProducts";
 
 // ==============================================================
 type Params = { searchParams: Promise<{ page: string }> };
@@ -21,15 +20,15 @@ export default async function Products({ searchParams }: Params) {
 
   const { page } = await searchParams;
 
-  const { data } = await axios.get("/api/products", {
-    params: {
-      email, 
-      pageSize: 10,
-      page: page ? parseInt(page) : 1,
-    },
+  // Use the `getProducts` function
+  const productsData = await getVendorProducts({
+    email, 
+    page: page ? parseInt(page) : 1,
+    pageSize: 10, // Adjust as needed
   });
 
-  console.log(email)
+
+  console.log("User email:", email);
 
   return (
     <Fragment>
@@ -55,7 +54,7 @@ export default async function Products({ searchParams }: Params) {
         </TableRow>
       </Hidden>
 
-      <ProductList products={data.result} meta={data.meta} />
+      <ProductList products={productsData?.products} meta={productsData?.meta} />
     </Fragment>
   );
 }

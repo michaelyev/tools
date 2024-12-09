@@ -9,7 +9,7 @@ export default async function ProductSearchResult() {
     <Container py="20px">
       <SearchResult
         sortOptions={sortOptions}
-        products={products} // Pass products as a prop
+        products={products.products} // Pass products as a prop
       />
     </Container>
   );

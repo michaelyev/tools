@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function getProducts({ page = 1, pageSize = 28, email = '' } = {}) {
+export async function getVendorProducts({ page = 1, pageSize = 28, email = '' } = {}) {
   try {
     const response = await axios.get("http://localhost:4100/products", {
       params: {

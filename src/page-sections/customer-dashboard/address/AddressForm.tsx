@@ -30,7 +30,6 @@ export default function AddressForm({ address }: AddressFormProps) {
   });
 
   const handleFormSubmit = async (values: any) => {
-    console.log(values);
   };
 
   return (
