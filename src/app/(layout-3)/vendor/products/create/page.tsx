@@ -9,9 +9,26 @@ import { ProductForm } from "@sections/vendor-dashboard/products";
 import { getUserSession } from "@utils/data_fetch/loggedInUserData";
 
 const categoryOptions = [
-  { label: "Fashion", value: "fashion" },
-  { label: "Gadget", value: "gadget" }
+  { label: "Earth Moving", value: "earth-moving" },
+  { label: "Trailers", value: "trailers" },
+  { label: "Saws", value: "saws" },
+  { label: "General Tools", value: "general-tools" },
+  { label: "Dehumidifiers", value: "dehumidifiers" },
+  { label: "Heaters", value: "heaters" },
+  { label: "Concrete and Masonry", value: "concrete-and-masonry" },
+  { label: "Compaction", value: "compaction" },
+  { label: "Dumpsters", value: "dumpsters" },
+  { label: "Offices and Storage", value: "offices-and-storage" },
+  { label: "Generators", value: "generators" },
+  { label: "Work Platforms", value: "work-platforms" },
+  { label: "Scaffolding", value: "scaffolding" },
+  { label: "Ladders", value: "ladders" },
+  { label: "Flooring", value: "flooring" },
+  { label: "Painting", value: "painting" },
+  { label: "Forklifts", value: "forklifts" },
+  { label: "Work Light", value: "work-light" },
 ];
+
 
 export default async function AddProduct() {
   const user = await getUserSession();

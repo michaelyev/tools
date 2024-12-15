@@ -1,0 +1,96 @@
+{
+    "id": "847b3a0e-a0db-4179-ba51-9ee601434db8",
+    "slug": "lord-2019",
+    "shop": {
+      "id": "acfa0595-3e11-4afc-a3e4-c59ddafe5ea5",
+      "slug": "scarlett-beauty",
+      "user": {
+        "id": "15e04e05-4446-4a3f-954f-4995ee9cd706",
+        "email": "Valentine10@gmail.com",
+        "phone": "(644) 648-8515 x03713",
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1203.jpg",
+        "password": "tCcmXOtawl_2QD3",
+        "dateOfBirth": "1976-08-28T14:44:08.160Z",
+        "verified": true,
+        "name": {
+          "firstName": "Emelie",
+          "lastName": "Rogahn"
+        }
+      },
+      "email": "Woodrow.Dietrich51@yahoo.com",
+      "name": "Scarlett Beauty",
+      "phone": "(613) 343-9004",
+      "address": "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
+      "verified": false,
+      "coverPicture": "/assets/images/banners/cycle.png",
+      "profilePicture": "/assets/images/faces/propic.png",
+      "socialLinks": {
+        "facebook": null,
+        "youtube": null,
+        "twitter": null,
+        "instagram": null
+      }
+    },
+    "title": "Lord 2019",
+    "brand": null,
+    "price": 200,
+    "size": null,
+    "colors": [],
+    "discount": 0,
+    "thumbnail": "/assets/images/products/Automotive/1.Ford2019.png",
+    "images": [
+      "/assets/images/products/Automotive/1.Ford2019.png",
+      "/assets/images/products/Automotive/1.Ford2019.png"
+    ],
+    "categories": [
+      "automotive"
+    ],
+    "subcategories": [],
+    "status": null,
+    "reviews": [],
+    "rating": 4,
+    "unit": "kg"
+  }
+
+
+  {
+    "_id": {
+      "$oid": "6757d472e273a15737ff44f5"
+    },
+    "id": "7716c1f5-b21d-4fe5-8bfd-ed1535077a9b",
+    "slug": "michael-yevtushenko",
+    "shop": {
+      "id": "eb5dab73-e9d0-4d2d-8d80-598957c68bf5",
+      "slug": "emelie-rogahn",
+      "user": {
+        "id": "b867e6fb-4d54-4fe1-ad97-4d8b3588c6f0",
+        "email": "Valentine10@gmail.com",
+        "avatar": "/default-avatar.png",
+        "name": {
+          "firstName": "Emelie",
+          "lastName": "Rogahn"
+        }
+      },
+      "email": "Valentine10@gmail.com",
+      "name": "Emelie Rogahn",
+      "phone": "123-456-7890",
+      "address": "Default Address",
+      "verified": false,
+      "coverPicture": "/default-cover.png",
+      "profilePicture": "/default-profile.png",
+      "socialLinks": {
+        "facebook": null,
+        "youtube": null,
+        "twitter": null,
+        "instagram": null
+      }
+    },
+    "price": 1444,
+    "colors": [],
+    "discount": 0,
+    "images": [],
+    "categories": [],
+    "reviews": [],
+    "rating": 0,
+    "__v": 0
+  }

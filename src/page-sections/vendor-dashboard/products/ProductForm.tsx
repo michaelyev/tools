@@ -75,6 +75,7 @@ export default function ProductUpdateForm({
     control,
     formState: { errors },
     setValue,
+    reset
   } = useForm({
     defaultValues: {
       name: "",
@@ -90,12 +91,9 @@ export default function ProductUpdateForm({
 
   const onSubmit = async (data: any) => {
     try {
-      // Формируем объект `shop`
       const shop = {
         id: crypto.randomUUID(),
-        slug:
-          loggedInUser?.name?.toLowerCase().replace(/\s+/g, "-") ||
-          "unknown-shop",
+        slug: loggedInUser?.name?.toLowerCase().replace(/\s+/g, "-") || "unknown-shop",
         user: {
           id: crypto.randomUUID(),
           email: loggedInUser?.email || "unknown-email",
@@ -107,8 +105,8 @@ export default function ProductUpdateForm({
         },
         email: loggedInUser?.email || "unknown-email",
         name: loggedInUser?.name || "Unknown Shop",
-        phone: "123-456-7890", // Заглушка, замените при необходимости
-        address: "Default Address", // Заглушка
+        phone: "123-456-7890",
+        address: "Default Address",
         verified: false,
         coverPicture: "/default-cover.png",
         profilePicture: "/default-profile.png",
@@ -119,26 +117,29 @@ export default function ProductUpdateForm({
           instagram: null,
         },
       };
-
-      // Добавляем `shop` в отправляемые данные
+  
+      // Преобразуем `category` в массив значений
+      const categoryValues = data.category.map((cat: Option) => cat.value);
+  
       const productData = {
         ...data,
         id: crypto.randomUUID(),
         slug: data.name.toLowerCase().replace(/\s+/g, "-"),
         shop,
+        category: categoryValues, // Передаем только значения категорий
       };
-
-      console.log("Product Data:", productData); // Отладка: проверьте, что `shop` добавлен
-
-      // Отправка данных на сервер
+  
+      console.log("Product Data:", productData);
+  
       const response = await fetch("http://localhost:4100/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(productData),
       });
-
+  
       if (response.ok) {
         alert("Product created successfully!");
+        reset()
       } else {
         alert("Failed to create product.");
       }
@@ -147,6 +148,8 @@ export default function ProductUpdateForm({
       alert("An error occurred while creating the product.");
     }
   };
+  
+  
 
   return (
     <Card p="30px" borderRadius={8}>
