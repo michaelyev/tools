@@ -4,12 +4,11 @@ import MegaMenu2 from "./mega-menu/MegaMenu2";
 import CategoryMenuItem from "./CategoryMenuItem";
 import { StyledCategoryDropdown } from "./styles";
 
-// =========================================
+
 type CategoryDropdownProps = {
   open: boolean;
   position?: "absolute" | "relative";
 };
-// =========================================
 
 export default function CategoryDropdown({ open, position = "absolute" }: CategoryDropdownProps) {
   const megaMenu = { MegaMenu1, MegaMenu2 };

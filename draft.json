@@ -1,96 +1,64 @@
 {
-    "id": "847b3a0e-a0db-4179-ba51-9ee601434db8",
-    "slug": "lord-2019",
-    "shop": {
-      "id": "acfa0595-3e11-4afc-a3e4-c59ddafe5ea5",
-      "slug": "scarlett-beauty",
-      "user": {
-        "id": "15e04e05-4446-4a3f-954f-4995ee9cd706",
-        "email": "Valentine10@gmail.com",
-        "phone": "(644) 648-8515 x03713",
-        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1203.jpg",
-        "password": "tCcmXOtawl_2QD3",
-        "dateOfBirth": "1976-08-28T14:44:08.160Z",
-        "verified": true,
-        "name": {
-          "firstName": "Emelie",
-          "lastName": "Rogahn"
-        }
-      },
-      "email": "Woodrow.Dietrich51@yahoo.com",
-      "name": "Scarlett Beauty",
-      "phone": "(613) 343-9004",
-      "address": "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
-      "verified": false,
-      "coverPicture": "/assets/images/banners/cycle.png",
-      "profilePicture": "/assets/images/faces/propic.png",
-      "socialLinks": {
-        "facebook": null,
-        "youtube": null,
-        "twitter": null,
-        "instagram": null
+  "slug": "multiquip-whiteman-mc3pea",
+  "shop": {
+    "id": "b8a5e4c1-d3c3-4116-9f3e-abc1234def56",
+    "slug": "seattle-tool-rental",
+    "user": {
+      "id": "2f5e0477-abc1-4725-bc47-5432ee7654fa",
+      "email": "support@seattletoolrental.com",
+      "phone": "(206) 123-4567",
+      "avatar": "https://res.cloudinary.com/demo/image/upload/v1234567890/avatar.jpg",
+      "password": "securepassword123",
+      "dateOfBirth": "1985-06-15T00:00:00.000Z",
+      "verified": true,
+      "name": {
+        "firstName": "John",
+        "lastName": "Doe"
       }
     },
-    "title": "Lord 2019",
-    "brand": null,
-    "price": 200,
-    "size": null,
-    "colors": [],
-    "discount": 0,
-    "thumbnail": "/assets/images/products/Automotive/1.Ford2019.png",
-    "images": [
-      "/assets/images/products/Automotive/1.Ford2019.png",
-      "/assets/images/products/Automotive/1.Ford2019.png"
-    ],
-    "categories": [
-      "automotive"
-    ],
-    "subcategories": [],
-    "status": null,
-    "reviews": [],
-    "rating": 4,
-    "unit": "kg"
-  }
-
-
-  {
-    "_id": {
-      "$oid": "6757d472e273a15737ff44f5"
-    },
-    "id": "7716c1f5-b21d-4fe5-8bfd-ed1535077a9b",
-    "slug": "michael-yevtushenko",
-    "shop": {
-      "id": "eb5dab73-e9d0-4d2d-8d80-598957c68bf5",
-      "slug": "emelie-rogahn",
-      "user": {
-        "id": "b867e6fb-4d54-4fe1-ad97-4d8b3588c6f0",
-        "email": "Valentine10@gmail.com",
-        "avatar": "/default-avatar.png",
-        "name": {
-          "firstName": "Emelie",
-          "lastName": "Rogahn"
-        }
-      },
-      "email": "Valentine10@gmail.com",
-      "name": "Emelie Rogahn",
-      "phone": "123-456-7890",
-      "address": "Default Address",
-      "verified": false,
-      "coverPicture": "/default-cover.png",
-      "profilePicture": "/default-profile.png",
-      "socialLinks": {
-        "facebook": null,
-        "youtube": null,
-        "twitter": null,
-        "instagram": null
-      }
-    },
-    "price": 1444,
-    "colors": [],
-    "discount": 0,
-    "images": [],
-    "categories": [],
-    "reviews": [],
-    "rating": 0,
-    "__v": 0
-  }
+    "email": "info@seattletoolrental.com",
+    "name": "Seattle Tool Rental",
+    "phone": "(206) 987-6543",
+    "address": "123 Main Street, Seattle, WA 98101, USA",
+    "verified": true,
+    "coverPicture": "/assets/images/banners/tool-rental.png",
+    "profilePicture": "/assets/images/faces/seattle-tools.png",
+    "socialLinks": {
+      "facebook": "https://facebook.com/seattletoolrental",
+      "youtube": "https://youtube.com/seattletoolrental",
+      "twitter": "https://twitter.com/seattletoolrent",
+      "instagram": "https://instagram.com/seattletoolrental"
+    }
+  },
+  "title": "Multiquip Whiteman MC3PEA - Mixer-Conc Poly Drum 115V elec 3cf",
+  "brand": "Multiquip Whiteman",
+  "price": 2000,
+  "size": null,
+  "colors": [],
+  "discount": 0,
+  "thumbnail": "/assets/images/products/construction/mc3pea.jpg",
+  "images": [
+    "/assets/images/products/construction/mc3pea-1.jpg",
+    "/assets/images/products/construction/mc3pea-2.jpg"
+  ],
+  "categories": [
+    "construction",
+    "concrete-mixers"
+  ],
+  "status": "available",
+  "reviews": [],
+  "rating": 4.5,
+  "unit": "unit",
+  "description": {
+    "technical": "- Model: MC3PEA\n- Drum Capacity: 3 cubic feet\n- Power Source: 115V electric motor\n- Drum Type: Polyethylene\n- Weight: Approximately 150 lbs\n- Dimensions: Compact and portable design for easy transport\n- Applications: Ideal for small to medium concrete jobs, including sidewalks, patios, and foundation work.",
+    "usage": "The Multiquip Whiteman MC3PEA is perfect for contractors and DIY enthusiasts who need a reliable mixer for small-scale concrete projects. Its durable polyethylene drum prevents rust and makes cleanup effortless. The compact design and electric motor allow for seamless operation in tight spaces.",
+    "notes": "Always follow safety guidelines while operating. Requires a 115V power source. Delivery and pickup services are available upon request."
+  },
+  "category": "concrete_masonry_tools",
+  "subcategory": "concrete_masonry_tools",
+  "location": "Seattle, WA",
+  "searchTags": "115V electric concrete mixer, 3 cubic feet capacity, poly drum mixer, portable concrete mixer, small-scale concrete mixer, residential construction mixer, DIY concrete tool, patio construction mixer, sidewalk concrete mixer, foundation work mixer, electric-powered mixer, concrete mixing equipment, compact concrete mixer, concrete drum mixer, lightweight mixer for rent",
+  "pricePerWeek": 150,
+  "pricePerDay": 50,
+  "deliveryCost": 30
+}

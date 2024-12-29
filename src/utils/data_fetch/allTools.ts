@@ -1,20 +1,20 @@
 import axios from "axios";
 
-export async function getProducts({ page = 1, pageSize = 28, email = '' } = {}) {
+export async function getProducts({ page = 1, pageSize = 12, email = '' } = {}) {
   try {
-    const response = await axios.get("http://localhost:4100/products", {
+    const response = await axios.get(`http://localhost:4100/products`, {
       params: {
         page,
-        size: pageSize, // Используем "size", так как это ожидает сервер
-        email, // Передаем email для фильтрации на сервере
-      },
-    });
+        size: pageSize, 
+        email 
+      }
+    })
 
     if (response.status !== 200) {
       throw new Error(`HTTP error! status: ${response.status}`);
+      
     }
-
-    // Возвращаем данные, полученные от API
+    console.log('sasdas')
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error.message);

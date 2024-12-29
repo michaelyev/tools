@@ -32,7 +32,6 @@ export const mainCarouselData = [
 ];
 
 export const categories = [
-  
   {
     id: "f4c1291a-ff9e-4aa2-aa6c-95eb8b8bcc5e",
     name: "Headphone",
@@ -84,8 +83,6 @@ export const categories = [
     for: { demo: "market-1", type: "top-categories" },
   },
   /* Main categories */
-
-
 
   {
     id: "6df3771a-7075-492d-8f1f-c8358cd6345f",
@@ -189,24 +186,16 @@ export const categories = [
   },
   {
     id: "e6660169-fbba-4724-81e3-8ffae6ff3707",
-    name: "Generators",
+    name: "Electrical",
     icon: null,
     slug: "laptop",
-    image: "/assets/categories/generator-electricity-electric-electrical-energy-svgrepo-com.svg",
+    image:
+      "/assets/categories/generator-electricity-electric-electrical-energy-svgrepo-com.svg",
     description: null,
     parent: [],
     for: { demo: "market-1", type: "categories" },
   },
-  {
-    id: "158d635a-76fd-425b-a158-1e8d8cd97542",
-    name: "Work Platforms",
-    icon: null,
-    slug: "desktop",
-    image: "/assets/categories/brt-station-piece-right-platform-svgrepo-com.svg",
-    description: null,
-    parent: [],
-    for: { demo: "market-1", type: "categories" },
-  },
+
   {
     id: "0b68c451-0d4d-47ac-83e4-33651ae3d11f",
     name: "Scaffolding",
@@ -233,6 +222,17 @@ export const categories = [
     icon: null,
     slug: "electronics",
     image: "/assets/categories/trowel-svgrepo-com.svg",
+    description: null,
+    parent: [],
+    for: { demo: "market-1", type: "categories" },
+  },
+  {
+    id: "158d635a-76fd-425b-a158-1e8d8cd97542",
+    name: "Work Platforms",
+    icon: null,
+    slug: "desktop",
+    image:
+      "/assets/categories/brt-station-piece-right-platform-svgrepo-com.svg",
     description: null,
     parent: [],
     for: { demo: "market-1", type: "categories" },
@@ -266,7 +266,7 @@ export const categories = [
     description: null,
     parent: [],
     for: { demo: "market-1", type: "categories" },
-  }
+  },
 ];
 
 // products

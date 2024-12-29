@@ -6,7 +6,7 @@ import Container from "@component/Container";
 import NextImage from "@component/NextImage";
 import Typography from "@component/Typography";
 import CategorySectionHeader from "@component/CategorySectionHeader";
-// API FUNCTIONS
+
 import api from "@utils/__api__/market-1";
 
 export default async function Section10() {

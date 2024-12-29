@@ -102,9 +102,9 @@ export default function SearchResult({ sortOptions, products }: Props) {
 
         <Grid item lg={9} xs={12}>
           {view === "grid" ? (
-            <ProductGridView products={products} />
+            <ProductGridView {...products}  />
           ) : (
-            <ProductListView products={products} />
+            <ProductListView {...products} />
           )}
         </Grid>
       </Grid>

@@ -936,29 +936,734 @@ const navigations = [
   },
 
   {
-    icon: "track",
-    title: "Pets",
-    href: "/product/search/pets",
+    icon: "electricity",
+    title: "Electrical",
+    href: "/electrical",
     menuComponent: "MegaMenu1",
+    menuData: {
+      categories: [
+        {
+          title: "Portable Generators",
+          href: "/electrical-power/portable-generators",
+          subCategories: [
+            {
+              title: "Small Portable Generators",
+              href: "/electrical-power/portable-generators/small",
+              imgUrl: "/images/electrical-power/small-portable-generators.png",
+            },
+            {
+              title: "Medium Portable Generators",
+              href: "/electrical-power/portable-generators/medium",
+              imgUrl: "/images/electrical-power/medium-portable-generators.png",
+            },
+            {
+              title: "Inverter Generators",
+              href: "/electrical-power/portable-generators/inverter",
+              imgUrl: "/images/electrical-power/inverter-generators.png",
+            },
+            {
+              title: "Home Backup Generators",
+              href: "/electrical-power/portable-generators/home-backup",
+              imgUrl: "/images/electrical-power/home-backup-generators.png",
+            },
+          ],
+        },
+        {
+          title: "Trailer-Mounted Generators",
+          href: "/electrical-power/trailer-generators",
+          subCategories: [
+            {
+              title: "Diesel Trailer Generators",
+              href: "/electrical-power/trailer-generators/diesel",
+              imgUrl: "/images/electrical-power/diesel-trailer-generators.png",
+            },
+            {
+              title: "High-Capacity Generators",
+              href: "/electrical-power/trailer-generators/high-capacity",
+              imgUrl: "/images/electrical-power/high-capacity-generators.png",
+            },
+            {
+              title: "Event Generators",
+              href: "/electrical-power/trailer-generators/event",
+              imgUrl: "/images/electrical-power/event-generators.png",
+            },
+            {
+              title: "Construction Site Generators",
+              href: "/electrical-power/trailer-generators/construction",
+              imgUrl: "/images/electrical-power/construction-generators.png",
+            },
+          ],
+        },
+        {
+          title: "Battery Systems",
+          href: "/electrical-power/battery-systems",
+          subCategories: [
+            {
+              title: "Portable Battery Packs",
+              href: "/electrical-power/battery-systems/portable",
+              imgUrl: "/images/electrical-power/portable-battery-packs.png",
+            },
+            {
+              title: "Rechargeable Batteries",
+              href: "/electrical-power/battery-systems/rechargeable",
+              imgUrl: "/images/electrical-power/rechargeable-batteries.png",
+            },
+            {
+              title: "UPS Systems (Uninterruptible Power Supply)",
+              href: "/electrical-power/battery-systems/ups",
+              imgUrl: "/images/electrical-power/ups-systems.png",
+            },
+          ],
+        },
+        {
+          title: "Power Distribution",
+          href: "/electrical-power/power-distribution",
+          subCategories: [
+            {
+              title: "Temporary Power Boxes",
+              href: "/electrical-power/power-distribution/temporary-boxes",
+              imgUrl: "/images/electrical-power/temporary-power-boxes.png",
+            },
+            {
+              title: "Extension Cords & Cables",
+              href: "/electrical-power/power-distribution/extension-cords",
+              imgUrl: "/images/electrical-power/extension-cords.png",
+            },
+            {
+              title: "Load Banks",
+              href: "/electrical-power/power-distribution/load-banks",
+              imgUrl: "/images/electrical-power/load-banks.png",
+            },
+            {
+              title: "Transfer Switches",
+              href: "/electrical-power/power-distribution/transfer-switches",
+              imgUrl: "/images/electrical-power/transfer-switches.png",
+            },
+          ],
+        },
+      ],
+      rightImage: {
+        imgUrl: "/assets/images/promotions/electrical-power.png",
+        href: "/promotions/electrical-power",
+      },
+    },
   },
   {
-    icon: "teddy-bear",
-    title: "Baby Toys",
-    href: "/product/search/baby-toys",
+    icon: "lightbulb",
+    title: "Lighting Rentals",
+    href: "/lighting-rentals",
     menuComponent: "MegaMenu1",
+    menuData: {
+      categories: [
+        {
+          title: "Work & Construction Lighting",
+          href: "/lighting-rentals/construction-lighting",
+          subCategories: [
+            {
+              title: "Light Towers",
+              href: "/lighting-rentals/construction-lighting/light-towers",
+              imgUrl: "/images/lighting-rentals/light-towers.png",
+            },
+            {
+              title: "Portable Work Lights",
+              href: "/lighting-rentals/construction-lighting/portable-lights",
+              imgUrl: "/images/lighting-rentals/portable-lights.png",
+            },
+            {
+              title: "Solar Light Towers",
+              href: "/lighting-rentals/construction-lighting/solar-towers",
+              imgUrl: "/images/lighting-rentals/solar-towers.png",
+            },
+            {
+              title: "Balloon Lights",
+              href: "/lighting-rentals/construction-lighting/balloon-lights",
+              imgUrl: "/images/lighting-rentals/balloon-lights.png",
+            },
+            {
+              title: "Towable Light Towers",
+              href: "/lighting-rentals/construction-lighting/towable-towers",
+              imgUrl: "/images/lighting-rentals/towable-towers.png",
+            },
+          ],
+        },
+        {
+          title: "Event & Decorative Lighting",
+          href: "/lighting-rentals/event-lighting",
+          subCategories: [
+            {
+              title: "LED Dance Floors",
+              href: "/lighting-rentals/event-lighting/led-dance-floors",
+              imgUrl: "/images/lighting-rentals/led-dance-floors.png",
+            },
+            {
+              title: "Uplighting",
+              href: "/lighting-rentals/event-lighting/uplighting",
+              imgUrl: "/images/lighting-rentals/uplighting.png",
+            },
+            {
+              title: "String & Party Lights",
+              href: "/lighting-rentals/event-lighting/string-party-lights",
+              imgUrl: "/images/lighting-rentals/string-party-lights.png",
+            },
+            {
+              title: "Neon Signs",
+              href: "/lighting-rentals/event-lighting/neon-signs",
+              imgUrl: "/images/lighting-rentals/neon-signs.png",
+            },
+            {
+              title: "Stage Lighting",
+              href: "/lighting-rentals/event-lighting/stage-lighting",
+              imgUrl: "/images/lighting-rentals/stage-lighting.png",
+            },
+          ],
+        },
+        {
+          title: "Specialty Lighting",
+          href: "/lighting-rentals/specialty-lighting",
+          subCategories: [
+            {
+              title: "Gobo Projectors",
+              href: "/lighting-rentals/specialty-lighting/gobo-projectors",
+              imgUrl: "/images/lighting-rentals/gobo-projectors.png",
+            },
+            {
+              title: "Black Lights",
+              href: "/lighting-rentals/specialty-lighting/black-lights",
+              imgUrl: "/images/lighting-rentals/black-lights.png",
+            },
+            {
+              title: "Stack Lights",
+              href: "/lighting-rentals/specialty-lighting/stack-lights",
+              imgUrl: "/images/lighting-rentals/stack-lights.png",
+            },
+            {
+              title: "Andon Lights",
+              href: "/lighting-rentals/specialty-lighting/andon-lights",
+              imgUrl: "/images/lighting-rentals/andon-lights.png",
+            },
+            {
+              title: "DJ Lighting",
+              href: "/lighting-rentals/specialty-lighting/dj-lighting",
+              imgUrl: "/images/lighting-rentals/dj-lighting.png",
+            },
+          ],
+        },
+      ],
+      rightImage: {
+        imgUrl: "/assets/images/promotions/lighting-rentals-promo.png",
+        href: "/promotions/lighting-rentals",
+      },
+    },
   },
   {
-    icon: "food",
-    title: "Groceries",
-    href: "/product/search/groceries",
+    icon: "office",
+    title: "Office & Storage Rentals",
+    href: "/office-storage-rentals",
     menuComponent: "MegaMenu1",
+    menuData: {
+      categories: [
+        {
+          title: "Office Rentals",
+          href: "/office-storage-rentals/office-rentals",
+          subCategories: [
+            {
+              title: "Mobile Office Trailers",
+              href: "/office-storage-rentals/office-rentals/mobile-trailers",
+              imgUrl: "/images/office-storage-rentals/mobile-trailers.png",
+            },
+            {
+              title: "Portable Office Buildings",
+              href: "/office-storage-rentals/office-rentals/portable-buildings",
+              imgUrl: "/images/office-storage-rentals/portable-buildings.png",
+            },
+            {
+              title: "Construction Office Trailers",
+              href: "/office-storage-rentals/office-rentals/construction-trailers",
+              imgUrl:
+                "/images/office-storage-rentals/construction-trailers.png",
+            },
+            {
+              title: "Temporary Office Spaces",
+              href: "/office-storage-rentals/office-rentals/temporary-spaces",
+              imgUrl: "/images/office-storage-rentals/temporary-spaces.png",
+            },
+          ],
+        },
+        {
+          title: "Storage Containers",
+          href: "/office-storage-rentals/storage-containers",
+          subCategories: [
+            {
+              title: "On-Site Storage Containers",
+              href: "/office-storage-rentals/storage-containers/on-site",
+              imgUrl: "/images/office-storage-rentals/on-site.png",
+            },
+            {
+              title: "Driveway Storage Containers",
+              href: "/office-storage-rentals/storage-containers/driveway",
+              imgUrl: "/images/office-storage-rentals/driveway.png",
+            },
+            {
+              title: "Temporary Storage Containers",
+              href: "/office-storage-rentals/storage-containers/temporary",
+              imgUrl: "/images/office-storage-rentals/temporary.png",
+            },
+            {
+              title: "Large Storage Containers",
+              href: "/office-storage-rentals/storage-containers/large",
+              imgUrl: "/images/office-storage-rentals/large.png",
+            },
+          ],
+        },
+        {
+          title: "Specialty Office & Storage",
+          href: "/office-storage-rentals/specialty",
+          subCategories: [
+            {
+              title: "Modular Office Trailers",
+              href: "/office-storage-rentals/specialty/modular-trailers",
+              imgUrl: "/images/office-storage-rentals/modular-trailers.png",
+            },
+            {
+              title: "Jobsite Office Trailers",
+              href: "/office-storage-rentals/specialty/jobsite-trailers",
+              imgUrl: "/images/office-storage-rentals/jobsite-trailers.png",
+            },
+            {
+              title: "Portable Office Units",
+              href: "/office-storage-rentals/specialty/portable-units",
+              imgUrl: "/images/office-storage-rentals/portable-units.png",
+            },
+          ],
+        },
+      ],
+      rightImage: {
+        imgUrl: "/assets/images/promotions/office-storage-rentals-promo.png",
+        href: "/promotions/office-storage-rentals",
+      },
+    },
   },
   {
-    icon: "car",
-    title: "Automotive",
-    href: "/product/search/automotive",
-    menuComponent: "MegaMenu1",
-  },
+    "icon": "platform",
+    "title": "Work Platforms",
+    "href": "/work-platforms",
+    "menuComponent": "MegaMenu1",
+    "menuData": {
+        "categories": [
+            {
+                "title": "Scissor Lifts",
+                "href": "/work-platforms/scissor-lifts",
+                "subCategories": [
+                    {
+                        "title": "Electric Scissor Lifts",
+                        "href": "/work-platforms/scissor-lifts/electric",
+                        "imgUrl": "/images/work-platforms/scissor-lifts-electric.png"
+                    },
+                    {
+                        "title": "Rough Terrain Scissor Lifts",
+                        "href": "/work-platforms/scissor-lifts/rough-terrain",
+                        "imgUrl": "/images/work-platforms/scissor-lifts-rough-terrain.png"
+                    }
+                ]
+            },
+            {
+                "title": "Boom Lifts",
+                "href": "/work-platforms/boom-lifts",
+                "subCategories": [
+                    {
+                        "title": "Articulating Boom Lifts",
+                        "href": "/work-platforms/boom-lifts/articulating",
+                        "imgUrl": "/images/work-platforms/boom-lifts-articulating.png"
+                    },
+                    {
+                        "title": "Telescopic Boom Lifts",
+                        "href": "/work-platforms/boom-lifts/telescopic",
+                        "imgUrl": "/images/work-platforms/boom-lifts-telescopic.png"
+                    }
+                ]
+            },
+            {
+                "title": "Material Lifts",
+                "href": "/work-platforms/material-lifts",
+                "subCategories": [
+                    {
+                        "title": "Portable Material Lifts",
+                        "href": "/work-platforms/material-lifts/portable",
+                        "imgUrl": "/images/work-platforms/material-lifts-portable.png"
+                    },
+                    {
+                        "title": "Heavy-Duty Material Lifts",
+                        "href": "/work-platforms/material-lifts/heavy-duty",
+                        "imgUrl": "/images/work-platforms/material-lifts-heavy-duty.png"
+                    }
+                ]
+            },
+            {
+                "title": "Siding Pump Jacks",
+                "href": "/work-platforms/siding-pump-jacks",
+                "subCategories": [
+                    {
+                        "title": "Adjustable Pump Jacks",
+                        "href": "/work-platforms/siding-pump-jacks/adjustable",
+                        "imgUrl": "/images/work-platforms/siding-pump-jacks-adjustable.png"
+                    },
+                    {
+                        "title": "Heavy-Duty Pump Jacks",
+                        "href": "/work-platforms/siding-pump-jacks/heavy-duty",
+                        "imgUrl": "/images/work-platforms/siding-pump-jacks-heavy-duty.png"
+                    }
+                ]
+            },
+            {
+                "title": "Aerial Platforms",
+                "href": "/work-platforms/aerial-platforms",
+                "subCategories": [
+                    {
+                        "title": "Push-Around Platforms",
+                        "href": "/work-platforms/aerial-platforms/push-around",
+                        "imgUrl": "/images/work-platforms/aerial-platforms-push-around.png"
+                    },
+                    {
+                        "title": "Vertical Mast Lifts",
+                        "href": "/work-platforms/aerial-platforms/vertical-mast",
+                        "imgUrl": "/images/work-platforms/aerial-platforms-vertical-mast.png"
+                    }
+                ]
+            }
+        ],
+        "rightImage": {
+            "imgUrl": "/assets/images/promotions/work-platforms-promo.png",
+            "href": "/promotions/work-platforms"
+        }
+    }
+}
+,
+{
+  "icon": "climate-control",
+  "title": "Climate Control Rentals",
+  "href": "/climate-control-rentals",
+  "menuComponent": "MegaMenu1",
+  "menuData": {
+    "categories": [
+      {
+        "title": "Heaters",
+        "href": "/climate-control-rentals/heaters",
+        "subCategories": [
+          {
+            "title": "Propane Heaters",
+            "href": "/climate-control-rentals/heaters/propane",
+            "imgUrl": "/images/climate-control/heaters-propane.png"
+          },
+          {
+            "title": "Electric Heaters",
+            "href": "/climate-control-rentals/heaters/electric",
+            "imgUrl": "/images/climate-control/heaters-electric.png"
+          },
+          {
+            "title": "Diesel Heaters",
+            "href": "/climate-control-rentals/heaters/diesel",
+            "imgUrl": "/images/climate-control/heaters-diesel.png"
+          },
+          {
+            "title": "Patio & Tent Heaters",
+            "href": "/climate-control-rentals/heaters/patio-tent",
+            "imgUrl": "/images/climate-control/heaters-patio-tent.png"
+          },
+          {
+            "title": "Construction Heaters",
+            "href": "/climate-control-rentals/heaters/construction",
+            "imgUrl": "/images/climate-control/heaters-construction.png"
+          }
+        ]
+      },
+      {
+        "title": "Dehumidifiers",
+        "href": "/climate-control-rentals/dehumidifiers",
+        "subCategories": [
+          {
+            "title": "Portable Dehumidifiers",
+            "href": "/climate-control-rentals/dehumidifiers/portable",
+            "imgUrl": "/images/climate-control/dehumidifiers-portable.png"
+          },
+          {
+            "title": "Industrial Dehumidifiers",
+            "href": "/climate-control-rentals/dehumidifiers/industrial",
+            "imgUrl": "/images/climate-control/dehumidifiers-industrial.png"
+          },
+          {
+            "title": "Crawl Space Dehumidifiers",
+            "href": "/climate-control-rentals/dehumidifiers/crawl-space",
+            "imgUrl": "/images/climate-control/dehumidifiers-crawl-space.png"
+          }
+        ]
+      },
+      {
+        "title": "Ventilation & Air Movers",
+        "href": "/climate-control-rentals/ventilation",
+        "subCategories": [
+          {
+            "title": "Fans & Blowers",
+            "href": "/climate-control-rentals/ventilation/fans-blowers",
+            "imgUrl": "/images/climate-control/fans-blowers.png"
+          },
+          {
+            "title": "Air Movers",
+            "href": "/climate-control-rentals/ventilation/air-movers",
+            "imgUrl": "/images/climate-control/air-movers.png"
+          },
+          {
+            "title": "Exhaust Fans",
+            "href": "/climate-control-rentals/ventilation/exhaust-fans",
+            "imgUrl": "/images/climate-control/exhaust-fans.png"
+          }
+        ]
+      },
+      {
+        "title": "Cooling Equipment",
+        "href": "/climate-control-rentals/cooling",
+        "subCategories": [
+          {
+            "title": "Evaporative Coolers",
+            "href": "/climate-control-rentals/cooling/evaporative-coolers",
+            "imgUrl": "/images/climate-control/cooling-evaporative.png"
+          },
+          {
+            "title": "Misting Fans",
+            "href": "/climate-control-rentals/cooling/misting-fans",
+            "imgUrl": "/images/climate-control/cooling-misting-fans.png"
+          },
+          {
+            "title": "Portable Air Conditioners",
+            "href": "/climate-control-rentals/cooling/portable-air-conditioners",
+            "imgUrl": "/images/climate-control/cooling-portable-ac.png"
+          }
+        ]
+      },
+      {
+        "title": "Specialty Climate Equipment",
+        "href": "/climate-control-rentals/specialty",
+        "subCategories": [
+          {
+            "title": "Ground Thaw Units",
+            "href": "/climate-control-rentals/specialty/ground-thaw",
+            "imgUrl": "/images/climate-control/specialty-ground-thaw.png"
+          },
+          {
+            "title": "Temporary Water Heaters",
+            "href": "/climate-control-rentals/specialty/temp-water-heaters",
+            "imgUrl": "/images/climate-control/specialty-temp-water-heaters.png"
+          },
+          {
+            "title": "Heat Lamps",
+            "href": "/climate-control-rentals/specialty/heat-lamps",
+            "imgUrl": "/images/climate-control/specialty-heat-lamps.png"
+          }
+        ]
+      }
+    ],
+    "rightImage": {
+      "imgUrl": "/assets/images/promotions/climate-control-rentals.png",
+      "href": "/promotions/climate-control"
+    }
+  }
+},
+{
+  "icon": "construction",
+  "title": "Concrete & Masonry Tools",
+  "href": "/concrete-masonry-tools",
+  "menuComponent": "MegaMenu1",
+  "menuData": {
+    "categories": [
+      {
+        "title": "Mixing Tools",
+        "href": "/concrete-masonry-tools/mixing-tools",
+        "subCategories": [
+          {
+            "title": "Mud Mixers",
+            "href": "/concrete-masonry-tools/mixing-tools/mud-mixers",
+            "imgUrl": "/images/concrete-masonry/mud-mixer.png"
+          },
+          {
+            "title": "Cement Mixers",
+            "href": "/concrete-masonry-tools/mixing-tools/cement-mixers",
+            "imgUrl": "/images/concrete-masonry/cement-mixer.png"
+          }
+        ]
+      },
+      {
+        "title": "Cutting Tools",
+        "href": "/concrete-masonry-tools/cutting-tools",
+        "subCategories": [
+          {
+            "title": "Concrete Saws",
+            "href": "/concrete-masonry-tools/cutting-tools/concrete-saws",
+            "imgUrl": "/images/concrete-masonry/concrete-saw.png"
+          },
+          {
+            "title": "Core Drills",
+            "href": "/concrete-masonry-tools/cutting-tools/core-drills",
+            "imgUrl": "/images/concrete-masonry/core-drill.png"
+          }
+        ]
+      },
+      {
+        "title": "Grinding & Polishing",
+        "href": "/concrete-masonry-tools/grinding-polishing",
+        "subCategories": [
+          {
+            "title": "Concrete Grinders",
+            "href": "/concrete-masonry-tools/grinding-polishing/concrete-grinders",
+            "imgUrl": "/images/concrete-masonry/concrete-grinder.png"
+          },
+          {
+            "title": "Scarifiers",
+            "href": "/concrete-masonry-tools/grinding-polishing/scarifiers",
+            "imgUrl": "/images/concrete-masonry/scarifier.png"
+          }
+        ]
+      },
+      {
+        "title": "Placement Tools",
+        "href": "/concrete-masonry-tools/placement-tools",
+        "subCategories": [
+          {
+            "title": "Concrete Buggies",
+            "href": "/concrete-masonry-tools/placement-tools/concrete-buggies",
+            "imgUrl": "/images/concrete-masonry/concrete-buggy.png"
+          },
+          {
+            "title": "Power Screeds",
+            "href": "/concrete-masonry-tools/placement-tools/power-screeds",
+            "imgUrl": "/images/concrete-masonry/power-screed.png"
+          },
+          {
+            "title": "Trowel Machines",
+            "href": "/concrete-masonry-tools/placement-tools/trowel-machines",
+            "imgUrl": "/images/concrete-masonry/trowel-machine.png"
+          }
+        ]
+      },
+      {
+        "title": "Demolition Tools",
+        "href": "/concrete-masonry-tools/demolition-tools",
+        "subCategories": [
+          {
+            "title": "Concrete Breakers",
+            "href": "/concrete-masonry-tools/demolition-tools/concrete-breakers",
+            "imgUrl": "/images/concrete-masonry/concrete-breaker.png"
+          }
+        ]
+      },
+      {
+        "title": "Finishing Tools",
+        "href": "/concrete-masonry-tools/finishing-tools",
+        "subCategories": [
+          {
+            "title": "Bull Floats",
+            "href": "/concrete-masonry-tools/finishing-tools/bull-floats",
+            "imgUrl": "/images/concrete-masonry/bull-float.png"
+          },
+          {
+            "title": "Concrete Edgers",
+            "href": "/concrete-masonry-tools/finishing-tools/concrete-edgers",
+            "imgUrl": "/images/concrete-masonry/concrete-edger.png"
+          }
+        ]
+      }
+    ],
+    "rightImage": {
+      "imgUrl": "/assets/images/promotions/concrete-masonry-tools-promo.png",
+      "href": "/promotions/concrete-masonry-tools"
+    }
+  }
+},
+{
+  "icon": "paint-roller",
+  "title": "Paint Tools & Equipment Rental",
+  "href": "/paint-tools-rental",
+  "menuComponent": "MegaMenu1",
+  "menuData": {
+    "categories": [
+      {
+        "title": "Paint Sprayers",
+        "href": "/paint-tools/paint-sprayers",
+        "subCategories": [
+          {
+            "title": "Airless Paint Sprayers",
+            "href": "/paint-tools/paint-sprayers/airless",
+            "imgUrl": "/images/paint-tools/airless-paint-sprayers.png"
+          },
+          {
+            "title": "HVLP Paint Sprayers",
+            "href": "/paint-tools/paint-sprayers/hvlp",
+            "imgUrl": "/images/paint-tools/hvlp-paint-sprayers.png"
+          },
+          {
+            "title": "Electric Paint Sprayers",
+            "href": "/paint-tools/paint-sprayers/electric",
+            "imgUrl": "/images/paint-tools/electric-paint-sprayers.png"
+          }
+        ]
+      },
+      {
+        "title": "Paint Mixers",
+        "href": "/paint-tools/paint-mixers",
+        "subCategories": [
+          {
+            "title": "Drill Paint Mixers",
+            "href": "/paint-tools/paint-mixers/drill",
+            "imgUrl": "/images/paint-tools/drill-paint-mixers.png"
+          },
+          {
+            "title": "Handheld Paint Mixers",
+            "href": "/paint-tools/paint-mixers/handheld",
+            "imgUrl": "/images/paint-tools/handheld-paint-mixers.png"
+          }
+        ]
+      },
+      {
+        "title": "Paint Strippers & Removers",
+        "href": "/paint-tools/paint-strippers",
+        "subCategories": [
+          {
+            "title": "Chemical Paint Strippers",
+            "href": "/paint-tools/paint-strippers/chemical",
+            "imgUrl": "/images/paint-tools/chemical-paint-strippers.png"
+          },
+          {
+            "title": "Infrared Paint Removers",
+            "href": "/paint-tools/paint-strippers/infrared",
+            "imgUrl": "/images/paint-tools/infrared-paint-removers.png"
+          }
+        ]
+      },
+      {
+        "title": "Specialty Painting Tools",
+        "href": "/paint-tools/specialty-tools",
+        "subCategories": [
+          {
+            "title": "Texture Rollers",
+            "href": "/paint-tools/specialty-tools/texture-rollers",
+            "imgUrl": "/images/paint-tools/texture-rollers.png"
+          },
+          {
+            "title": "Paint Edgers",
+            "href": "/paint-tools/specialty-tools/paint-edgers",
+            "imgUrl": "/images/paint-tools/paint-edgers.png"
+          }
+        ]
+      }
+    ],
+    "rightImage": {
+      "imgUrl": "/assets/images/promotions/paint-tools-promo.png",
+      "href": "/promotions/paint-tools"
+    }
+  }
+}
+
+
+
+
 ];
 
 export default navigations;

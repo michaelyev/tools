@@ -9,12 +9,12 @@ import Product from "@models/product.model";
 type Props = { products: Product[] };
 // ==========================================================
 
-export default function ProductGridView({ products }: Props) {
+export default function ProductGridView({ products, total }: Props) {
   return (
     <div>
-      <Grid container spacing={6}>
+      <Grid container spacing={2}>
         {products.map((item) => (
-          <Grid item lg={4} sm={6} xs={12} key={item.id}>
+          <Grid item lg={4} sm={6} xs={6} key={item.id}>
             <ProductCard1
               id={item.id}
               slug={item.slug}
@@ -29,9 +29,16 @@ export default function ProductGridView({ products }: Props) {
         ))}
       </Grid>
 
-      <FlexBox flexWrap="wrap" justifyContent="space-between" alignItems="center" mt="32px">
-        <SemiSpan>Showing 1-9 of 1.3k Products</SemiSpan>
-        <Pagination pageCount={products.length} />
+      <FlexBox
+        flexWrap="wrap"
+        justifyContent="space-between"
+        alignItems="center"
+        mt="32px"
+      >
+        <SemiSpan>
+          Showing 1-{products.length} of {total} products
+        </SemiSpan>
+        <Pagination pageCount={Math.ceil(total / 12)} />
       </FlexBox>
     </div>
   );
