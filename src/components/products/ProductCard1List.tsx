@@ -1,6 +1,5 @@
 import FlexBox from "@component/FlexBox";
 import Grid from "@component/grid/Grid";
-import Pagination from "@component/pagination";
 import { ProductCard1 } from "@component/product-cards";
 import { SemiSpan } from "@component/Typography";
 import Product from "@models/product.model";
@@ -38,7 +37,6 @@ export default function ProductGridView({ products, total }: Props) {
         <SemiSpan>
           Showing 1-{products.length} of {total} products
         </SemiSpan>
-        <Pagination pageCount={Math.ceil(total / 12)} />
       </FlexBox>
     </div>
   );

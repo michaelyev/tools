@@ -1,6 +1,6 @@
 const navbarNavigations = [
   { title: "Home", url: "/" },
-  { title: "All Items", url: "/product/search/mobile phone" },
+  { title: "All Items", url: "/products" },
   {
     title: "Pages",
     child: [

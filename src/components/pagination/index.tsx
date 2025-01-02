@@ -6,27 +6,38 @@ import { SpaceProps } from "styled-system";
 import Icon from "@component/icon/Icon";
 import { Button } from "@component/buttons";
 import { StyledPagination } from "./styled";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // ==============================================================
+// Props Interface
 export interface PaginationProps extends SpaceProps {
   pageCount: number;
   pageRangeDisplayed?: number;
   marginPagesDisplayed?: number;
-  onChange?: (data: number) => void;
 }
 // ==============================================================
 
+// ...
+
 export default function Pagination({
-  onChange,
   pageCount,
-  pageRangeDisplayed,
-  marginPagesDisplayed,
+  pageRangeDisplayed = 3,
+  marginPagesDisplayed = 2,
   ...props
 }: PaginationProps) {
-  const handlePageChange = async (page: any) => {
-    if (onChange) onChange(page.selected);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page") || 1);
+
+  // Update URL and reload the page
+  const handlePageChange = (page: any) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", (page.selected + 1).toString()); // ReactPaginate uses 0-based index
+    const newUrl = `?${params.toString()}`;
+    window.location.href = newUrl; // Full page reload
   };
 
+  // Custom Buttons for Pagination
   const PREVIOUS_BUTTON = (
     <Button
       height="auto"
@@ -34,7 +45,8 @@ export default function Pagination({
       color="primary"
       overflow="hidden"
       borderRadius="50%"
-      className="control-button">
+      className="control-button"
+    >
       <Icon defaultcolor="currentColor" variant="small">
         chevron-left
       </Icon>
@@ -48,7 +60,8 @@ export default function Pagination({
       color="primary"
       overflow="hidden"
       borderRadius="50%"
-      className="control-button">
+      className="control-button"
+    >
       <Icon defaultcolor="currentColor" variant="small">
         chevron-right
       </Icon>
@@ -65,6 +78,7 @@ export default function Pagination({
     <StyledPagination {...props}>
       <ReactPaginate
         pageCount={pageCount}
+        forcePage={currentPage - 1} // Sync current page
         nextLabel={NEXT_BUTTON}
         breakLabel={BREAK_LABEL}
         activeClassName="active"
@@ -74,7 +88,6 @@ export default function Pagination({
         onPageChange={handlePageChange}
         pageRangeDisplayed={pageRangeDisplayed}
         marginPagesDisplayed={marginPagesDisplayed}
-        // subContainerClassName="pages pagination"
       />
     </StyledPagination>
   );

@@ -1,3 +1,5 @@
+
+
 {
   "slug": "multiquip-whiteman-mc3pea",
   "shop": {
@@ -49,11 +51,7 @@
   "reviews": [],
   "rating": 4.5,
   "unit": "unit",
-  "description": {
-    "technical": "- Model: MC3PEA\n- Drum Capacity: 3 cubic feet\n- Power Source: 115V electric motor\n- Drum Type: Polyethylene\n- Weight: Approximately 150 lbs\n- Dimensions: Compact and portable design for easy transport\n- Applications: Ideal for small to medium concrete jobs, including sidewalks, patios, and foundation work.",
-    "usage": "The Multiquip Whiteman MC3PEA is perfect for contractors and DIY enthusiasts who need a reliable mixer for small-scale concrete projects. Its durable polyethylene drum prevents rust and makes cleanup effortless. The compact design and electric motor allow for seamless operation in tight spaces.",
-    "notes": "Always follow safety guidelines while operating. Requires a 115V power source. Delivery and pickup services are available upon request."
-  },
+  "description": "- Model: MC3PEA\n- Drum Capacity: 3 cubic feet\n- Power Source: 115V electric motor\n- Drum Type: Polyethylene\n- Weight: Approximately 150 lbs\n- Dimensions: Compact and portable design for easy transport\n- Applications: Ideal for small to medium concrete jobs, including sidewalks, patios, and foundation work.",
   "category": "concrete_masonry_tools",
   "subcategory": "concrete_masonry_tools",
   "location": "Seattle, WA",

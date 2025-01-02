@@ -4,6 +4,7 @@ import api from "@utils/__api__/products";
 import ProductIntro from "@component/products/ProductIntro";
 import ProductView from "@component/products/ProductView";
 import Container from "@component/Container";
+import { getProducts } from "@utils/data_fetch/allTools";
 
 // ==============================================================
 interface Props {
@@ -17,22 +18,25 @@ export default async function ProductDetails({ params }: Props) {
   const shops = await api.getAvailableShop();
   const relatedProducts = await api.getRelatedProducts();
   const frequentlyBought = await api.getFrequentlyBought();
-  const product = await api.getProduct(slug);
-
+  const product = await getProducts({slug: slug})
+  const productInfo = product.products[0]
+/* console.log(productInfo.description) */
   return (
     <Container>
       <Fragment>
         <ProductIntro
-          id={product.id}
-          price={product.price}
-          title={product.title}
-          images={product.images}
+          id={productInfo.id}
+          price={productInfo.price}
+          title={productInfo.title}
+          images={productInfo.images}
+          
         />
 
         <ProductView
           shops={shops}
           relatedProducts={relatedProducts}
           frequentlyBought={frequentlyBought}
+          description={productInfo.description}
         />
       </Fragment>
     </Container>

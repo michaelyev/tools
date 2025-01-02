@@ -5,9 +5,18 @@ import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
 import { getProducts } from "@utils/data_fetch/allTools";
 
-export default async function ProductSearchResult() {
-  const products = await getProducts(); // Fetch products on the server
+export default async function ProductSearchResult(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const currentPage = Number(searchParams?.page) || 1;
+  const query = searchParams?.query
+  const products = await getProducts({page:currentPage}); // Fetch products on the server
 
+  console.log(currentPage)
   return (
     <Container py="20px">
       <SearchResult
