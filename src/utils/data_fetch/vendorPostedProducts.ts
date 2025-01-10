@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function getVendorProducts({ page = 1, pageSize = 28, email = '' } = {}) {
   try {
-    const response = await axios.get("http://localhost:4100/products", {
+    const response = await axios.get("http://localhost:4100/products/by-email?email=", {
       params: {
         page,
         size: pageSize, // Используем "size", так как это ожидает сервер

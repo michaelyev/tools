@@ -430,9 +430,7 @@ const navigations = [
         "href": "/sale-page-water-remediation"
       }
     }
-  }
-    
-  ,
+  },
   {
     "icon": "compactor",
     "title": "Compaction Equipment",
@@ -521,8 +519,7 @@ const navigations = [
         "href": "/sale-page-compaction"
       }
     }
-  }
-  ,
+  },
   {
     icon: "saw",
     title: "Saws",

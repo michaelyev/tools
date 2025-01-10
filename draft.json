@@ -1,62 +1,42 @@
-
-
 {
-  "slug": "multiquip-whiteman-mc3pea",
+  "slug": "hercules-breaker-hammer-hex",
   "shop": {
     "id": "b8a5e4c1-d3c3-4116-9f3e-abc1234def56",
     "slug": "seattle-tool-rental",
     "user": {
       "id": "2f5e0477-abc1-4725-bc47-5432ee7654fa",
-      "email": "support@seattletoolrental.com",
-      "phone": "(206) 123-4567",
-      "avatar": "https://res.cloudinary.com/demo/image/upload/v1234567890/avatar.jpg",
-      "password": "securepassword123",
-      "dateOfBirth": "1985-06-15T00:00:00.000Z",
-      "verified": true,
-      "name": {
-        "firstName": "John",
-        "lastName": "Doe"
-      }
-    },
-    "email": "info@seattletoolrental.com",
-    "name": "Seattle Tool Rental",
-    "phone": "(206) 987-6543",
-    "address": "123 Main Street, Seattle, WA 98101, USA",
-    "verified": true,
-    "coverPicture": "/assets/images/banners/tool-rental.png",
-    "profilePicture": "/assets/images/faces/seattle-tools.png",
-    "socialLinks": {
-      "facebook": "https://facebook.com/seattletoolrental",
-      "youtube": "https://youtube.com/seattletoolrental",
-      "twitter": "https://twitter.com/seattletoolrent",
-      "instagram": "https://instagram.com/seattletoolrental"
+      "email": "support@seattletool-rental.com",
+      "phone": "(206) 123-4567"
     }
   },
-  "title": "Multiquip Whiteman MC3PEA - Mixer-Conc Poly Drum 115V elec 3cf",
-  "brand": "Multiquip Whiteman",
-  "price": 2000,
-  "size": null,
-  "colors": [],
+  "title": "Hercules 15 Amp 42 lb. 1-1/8 in. Hex Lower Wall Breaker Hammer",
+  "brand": "Hercules",
+  "model": "HEX-42LB",
+  "card": {
+    "shortName": "Hercules Breaker Hammer",
+    "shortDescription": "Heavy-duty breaker hammer for demolishing walls and concrete."
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [-122.205429, 47.760090]
+  },
+  "colors": ["blue", "black"],
   "discount": 0,
-  "thumbnail": "/assets/images/products/construction/mc3pea.jpg",
+  "thumbnail": "https://res.cloudinary.com/dzojhepyl/image/upload/v1736533057/rent-tools/57150_W3_zsb3i6.jpg",
   "images": [
-    "/assets/images/products/construction/mc3pea-1.jpg",
-    "/assets/images/products/construction/mc3pea-2.jpg"
+    "https://res.cloudinary.com/dzojhepyl/image/upload/v1736533057/rent-tools/57150_W4_dvy5xp.jpg",
+    "https://res.cloudinary.com/dzojhepyl/image/upload/v1736533057/rent-tools/57150_W7_glb1zj.jpg"
   ],
-  "categories": [
-    "construction",
-    "concrete-mixers"
-  ],
+  "category": "demolition_tools",
+  "subcategory": "breaker_hammers",
   "status": "available",
   "reviews": [],
-  "rating": 4.5,
+  "rating": 4.8,
   "unit": "unit",
-  "description": "- Model: MC3PEA\n- Drum Capacity: 3 cubic feet\n- Power Source: 115V electric motor\n- Drum Type: Polyethylene\n- Weight: Approximately 150 lbs\n- Dimensions: Compact and portable design for easy transport\n- Applications: Ideal for small to medium concrete jobs, including sidewalks, patios, and foundation work.",
-  "category": "concrete_masonry_tools",
-  "subcategory": "concrete_masonry_tools",
-  "location": "Seattle, WA",
-  "searchTags": "115V electric concrete mixer, 3 cubic feet capacity, poly drum mixer, portable concrete mixer, small-scale concrete mixer, residential construction mixer, DIY concrete tool, patio construction mixer, sidewalk concrete mixer, foundation work mixer, electric-powered mixer, concrete mixing equipment, compact concrete mixer, concrete drum mixer, lightweight mixer for rent",
-  "pricePerWeek": 150,
-  "pricePerDay": 50,
-  "deliveryCost": 30
+  "description": "- Model: HEX-42LB\n- Power: 15 Amp motor\n- Weight: 42 lbs\n- Applications: Designed for breaking concrete, lower walls, and other demolition tasks.\n- Features: Ergonomic D-shaped handle for better control, low vibration for user comfort, 1-1/8 in. hex shank for secure bit retention, and high-impact energy for faster breaking.\n- Accessories: Includes chisel bit and durable carrying case.",
+  "searchTags": "Hercules breaker hammer, 42 lb demolition tool, concrete breaker, 15 amp hex breaker, demolition equipment, wall breaker",
+  "pricePerWeek": 180,
+  "pricePerDay": 60,
+  "deliveryCost": 40,
+  "price": 699
 }
