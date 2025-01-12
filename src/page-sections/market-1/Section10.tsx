@@ -6,11 +6,9 @@ import Container from "@component/Container";
 import NextImage from "@component/NextImage";
 import Typography from "@component/Typography";
 import CategorySectionHeader from "@component/CategorySectionHeader";
-
-import api from "@utils/__api__/market-1";
+import { categories } from "@data/categories";
 
 export default async function Section10() {
-  const categories = await api.getCategories();
 
   return (
     <Container mb="70px">
@@ -19,7 +17,7 @@ export default async function Section10() {
       <Grid container spacing={6}>
         {categories.map((item) => (
           <Grid item lg={2} md={3} sm={4} xs={12} key={item.id}>
-            <Link href="/">
+            <Link href={`products/${item.slug}`}>
               <Card
                 hoverEffect
                 p="0.75rem"

@@ -9,12 +9,25 @@ export async function getProducts({
   lat,
   lng,
   distance,
-  category = "paint",
-  subcategory = "",
+  category = "",
+  subСategory = "",
   subSubcategory = "",
 }) {
   try {
-    const response = await axios.get("http://localhost:4100/products", {
+    // Формируем путь маршрута
+    const path = [
+      "http://localhost:4100/products",
+      category,
+      subСategory,
+      subSubcategory,
+    ]
+      .filter(Boolean) // Убираем пустые значения
+      .join("/");
+
+    console.log("Constructed URL:", path);
+
+    // Добавляем query-параметры, если они есть
+    const response = await axios.get(path, {
       params: {
         page,
         size: pageSize,
@@ -24,9 +37,6 @@ export async function getProducts({
         lat,
         lng,
         distance,
-        category,
-        subcategory,
-        subSubcategory,
       },
     });
 
@@ -40,4 +50,3 @@ export async function getProducts({
     return { products: [], total: 0 };
   }
 }
-

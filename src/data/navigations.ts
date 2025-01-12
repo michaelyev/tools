@@ -43,7 +43,7 @@ const navigations = [
           subCategories: [
             {
               title: "Mini Excavators",
-              href: "/products/earthmoving/excavators/mini",
+              href: "/products/earthmoving/excavators/mini-excavators",
               imgUrl: "/images/excavators/mini.png",
             },
             {

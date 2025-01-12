@@ -32,7 +32,9 @@ export const mainCarouselData = [
 ];
 
 export const categories = [
-  {
+  /* top categories */
+
+  /* {
     id: "f4c1291a-ff9e-4aa2-aa6c-95eb8b8bcc5e",
     name: "Headphone",
     icon: null,
@@ -81,7 +83,7 @@ export const categories = [
     description: "3k orders this week",
     parent: [],
     for: { demo: "market-1", type: "top-categories" },
-  },
+  }, */
   /* Main categories */
 
   {

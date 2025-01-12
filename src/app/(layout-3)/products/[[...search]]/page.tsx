@@ -5,18 +5,35 @@ import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
 import { getProducts } from "@utils/data_fetch/allTools";
 
-export default async function ProductSearchResult(props: {
-  searchParams?: Promise<{
+export default async function ProductSearchResult({
+  params,
+  searchParams,
+}: {
+  params: {
+    search?: string[]; // массив из [category, subcategory, subSubcategory]
+  };
+  searchParams?: {
     query?: string;
     page?: string;
-  }>;
+    email?: string;
+    lat?: string;
+    lng?: string;
+    distance?: string;
+  };
 }) {
-  const searchParams = await props.searchParams;
   const currentPage = Number(searchParams?.page) || 1;
-  const query = searchParams?.query
-  const products = await getProducts({page:currentPage}); // Fetch products on the server
+  const query = searchParams?.query || "";
+  const category = params?.search?.[0] || undefined;
+  const subCategory = params?.search?.[1] || undefined;
+  const subSubCategory = params?.search?.[2] || undefined;
 
-  console.log(currentPage)
+
+  console.log(params?.search)
+
+  const products = await getProducts({
+    page: currentPage, category: category, subСategory: subCategory, subSubcategory: subSubCategory
+  });
+
   return (
     <Container py="20px">
       <SearchResult
