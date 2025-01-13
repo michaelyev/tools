@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { createProduct } from "@utils/data_fetch/createProduct";
 
 import Card from "@component/Card";
 import Image from "@component/Image";
@@ -15,6 +14,8 @@ import DropZone from "@component/DropZone";
 import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
+import { getUserLocation } from "@utils/location_fetch/location_fetch";
+import { useEffect, useState } from "react";
 
 // Styled Component
 const UploadImageBox = styled("div")(({ theme }) => ({
@@ -88,6 +89,11 @@ export default function ProductUpdateForm({
     },
     resolver: yupResolver(validationSchema),
   });
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+    city: string;
+  } | null>(null);
 
   const onSubmit = async (data: any) => {
     try {
@@ -121,12 +127,21 @@ export default function ProductUpdateForm({
       // Преобразуем `category` в массив значений
       const categoryValues = data.category.map((cat: Option) => cat.value);
   
+      // Проверяем, есть ли данные о локации
+      const productLocation = location
+        ? {
+            type: "Point",
+            coordinates: [location.longitude, location.latitude],
+          }
+        : null;
+  
       const productData = {
         ...data,
         id: crypto.randomUUID(),
         slug: data.name.toLowerCase().replace(/\s+/g, "-"),
         shop,
         category: categoryValues, // Передаем только значения категорий
+        location: productLocation, // Добавляем локацию в данные продукта
       };
   
       console.log("Product Data:", productData);
@@ -139,7 +154,7 @@ export default function ProductUpdateForm({
   
       if (response.ok) {
         alert("Product created successfully!");
-        reset()
+        reset();
       } else {
         alert("Failed to create product.");
       }
@@ -149,7 +164,20 @@ export default function ProductUpdateForm({
     }
   };
   
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      const loc = await getUserLocation();
+      setLocation(loc);
+
+    };
+
+    fetchLocation();
+  }, []);
+
+
   
+  console.log(location)
 
   return (
     <Card p="30px" borderRadius={8}>
