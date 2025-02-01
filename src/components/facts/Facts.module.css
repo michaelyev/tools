@@ -1,0 +1,68 @@
+/* Общий контейнер */
+.container {
+    display: grid;
+    grid-template-columns: 3fr 3fr; /* Две колонки для больших экранов */
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Маленькие элементы (левая часть) */
+  .smallItems {
+    display: flex;
+    gap: 3vh;
+    overflow-x: auto; /* Горизонтальная прокрутка */
+    scroll-snap-type: x mandatory; /* Плавный скроллинг карточек */
+    -webkit-overflow-scrolling: touch; /* Для лучшей прокрутки на iOS */
+  }
+  
+  /* Каждая карточка */
+  .card {
+    flex: 0 0 auto; /* Карточки не уменьшаются и занимают минимальное пространство */
+    width: 30%; /* Ширина карточки */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    height: 150px;
+    scroll-snap-align: start; /* Карточка выравнивается по началу */
+  }
+  
+  /* Красная карточка */
+  .cardRed {
+    background: #f44336;
+  }
+  
+  /* Синяя карточка */
+  .cardBlue {
+    background: #3f51b5;
+  }
+  
+  /* Зелёная карточка */
+  .cardGreen {
+    background: #4caf50;
+  }
+  
+  /* Большой элемент (правая часть) */
+  .largeItem {
+    border-radius: 8px;
+    text-align: center;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .container {
+      grid-template-columns: 1fr; /* Все элементы в одну колонку */
+      grid-template-rows: auto auto; /* Большой элемент переносится вниз */
+    }
+  
+    .smallItems {
+      display: flex; /* Ряд карточек */
+    }
+  }
+  

@@ -10,23 +10,24 @@ export async function getProducts({
   lng,
   distance,
   category = "",
-  subСategory = "",
+  subCategory = "",
   subSubcategory = "",
+  q = "", // Add `q` parameter for text search
 }) {
   try {
-    // Формируем путь маршрута
+    // Construct the URL path dynamically
     const path = [
       "http://localhost:4100/products",
       category,
-      subСategory,
+      subCategory,
       subSubcategory,
     ]
-      .filter(Boolean) // Убираем пустые значения
+      .filter(Boolean) // Remove empty values
       .join("/");
 
     console.log("Constructed URL:", path);
 
-    // Добавляем query-параметры, если они есть
+    // Add query parameters dynamically
     const response = await axios.get(path, {
       params: {
         page,
@@ -37,6 +38,7 @@ export async function getProducts({
         lat,
         lng,
         distance,
+        q, // Include `q` for text search
       },
     });
 

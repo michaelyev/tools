@@ -3,10 +3,10 @@ import { Carousel } from "@component/carousel";
 import ProductCard1 from "@component/product-cards/ProductCard1";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 // API FUNCTIONS
-import api from "@utils/__api__/market-1";
+import { getProducts } from "@utils/data_fetch/allTools";
 
 export default async function Section2() {
-  const products = await api.getFlashDeals();
+  /* const products = await api.getFlashDeals(); */
 
   const responsive = [
     { breakpoint: 1279, settings: { slidesToShow: 4 } },
@@ -15,11 +15,19 @@ export default async function Section2() {
     { breakpoint: 500, settings: { slidesToShow: 1 } }
   ];
 
+  const products = await getProducts({
+    page: 1,
+    pageSize: 12
+  })
+
+  const discounted = products.products
+
+  console.log(products.products)
   return (
-    <CategorySectionCreator iconName="light" title="Flash Deals" seeMoreLink="#">
+    <CategorySectionCreator iconName="light" title="Popular Items" seeMoreLink="#">
       <Box mt="-0.25rem" mb="-0.25rem">
         <Carousel slidesToShow={4} responsive={responsive}>
-          {products.map((item, ind) => (
+          {discounted.map((item, ind) => (
             <Box py="0.25rem" key={ind}>
               <ProductCard1
                 key={ind}

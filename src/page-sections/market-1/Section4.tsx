@@ -8,10 +8,15 @@ import ProductCard5 from "@component/product-cards/ProductCard5";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 // API FUNCTIONS
 import api from "@utils/__api__/market-1";
+import { getProducts } from "@utils/data_fetch/allTools";
 
 export default async function Section4() {
-  const topRatedList = await api.getTopRatedProduct();
-  const topRatedBrands = await api.getTopRatedBrand();
+  const products = await getProducts({
+      page: 1,
+      pageSize: 4
+    })
+  
+    const discounted = products.products
 
   return (
     <Box mb="3.75rem">
@@ -22,7 +27,7 @@ export default async function Section4() {
 
             <Card p="1rem" borderRadius={8}>
               <Grid container spacing={4}>
-                {topRatedList.map((item) => (
+                {discounted.map((item) => (
                   <Grid item md={3} sm={6} xs={6} key={item.title}>
                     <Link href={`/product/search/${item.slug}`}>
                       <ProductCard4
@@ -44,7 +49,7 @@ export default async function Section4() {
 
             <Card p="1rem" borderRadius={8}>
               <Grid container spacing={4}>
-                {topRatedBrands.map((item) => (
+                {discounted.map((item) => (
                   <Grid item sm={6} xs={12} key={item.id}>
                     <Link href={`/product/search/${item.slug}`}>
                       <ProductCard5 title={item.name} imgUrl={item.image} />

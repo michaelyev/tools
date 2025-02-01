@@ -16,6 +16,10 @@ import Section10 from "@sections/market-1/Section10";
 import Section11 from "@sections/market-1/Section11";
 import Section12 from "@sections/market-1/Section12";
 import Section13 from "@sections/market-1/Section13";
+import Grid from "@component/grid/Grid";
+import Container from "@component/Container";
+import CategorySectionHeader from "@component/CategorySectionHeader";
+import Facts from "@component/facts/Facts";
 
 
 export default async function Home() {
@@ -34,6 +38,8 @@ export default async function Home() {
     <main>
       {/* HERO CAROUSEL AREA */}
       <Section1 />
+
+      <Facts />
 
       {/* CATEGORIES AREA */}
       <Section10 />
@@ -70,9 +76,6 @@ export default async function Home() {
 
       {/* TOP CATEGORIES AREA */}
       <Section3 />
-
-      
-      
 
       {/* SERVICES AREA */}
       <Section12 />
