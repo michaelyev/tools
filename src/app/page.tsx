@@ -20,10 +20,15 @@ import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import Facts from "@component/facts/Facts";
+import { getProducts } from "@utils/data_fetch/allTools";
 
 
 export default async function Home() {
-  const carList = await api.getCarList();
+  const data =  await getProducts({
+    page: 1,
+    pageSize: 6
+  })
+  const carList = data.products
   const carBrands = await api.getCarBrands();
   const mobileList = await api.getMobileList();
   const opticsList = await api.getOpticsList();
@@ -57,7 +62,13 @@ export default async function Home() {
       <Section13 />
 
       {/* CAR LIST AREA */}
-      <Section6 carBrands={carBrands} carList={carList} />
+      <Section7
+        shops={mobileShops}
+        brands={mobileBrands}
+        title="Excavators"
+        productCategory="earthmoving"
+        productList={mobileList}
+      />
       {/* DISCOUNT BANNERS AREA */}
       <Section8 />
       {/* MOBILE PHONES AREA */}
@@ -67,9 +78,6 @@ export default async function Home() {
         title="Mobile Phones"
         productList={mobileList}
       />
-
-      {/* TRENDING PRODUCTS AREA */}
-      {/* <TopTrending products={trendingItems} /> */}
 
       {/* MORE PRODUCTS AREA */}
       <Section11 />

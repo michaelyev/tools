@@ -19,12 +19,12 @@ export default function SearchInput() {
 
     if (!value) setResultList([]);
     else setResultList(dummySearchResult);
-  }, 200);
+  }, 200)
 
   const hanldeSearch = useCallback((event: any) => {
     event.persist();
     search(event);
-  }, []);
+  }, [])
 
   const handleDocumentClick = () => setResultList([]);
 

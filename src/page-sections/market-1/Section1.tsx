@@ -30,3 +30,8 @@ export default async function Section1() {
     </Fragment>
   );
 }
+/* {carouselData.map((item, index) => (
+  <div style={{height:'380px', width:'100%'}}>  <NextImage style={{width: '100%', heigth: '380px'}} fill src='/assets/hero/hero_banner.png' /> 
+</div>
+))}
+ */

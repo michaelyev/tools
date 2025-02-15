@@ -10,4 +10,3 @@ export function generateSearchUrl({ q = "", category = "", page = 1, pageSize = 
   
     return `${basePath}?${queryParams.toString()}`;
   }
-  

@@ -41,34 +41,22 @@ type User = {
 };
 
 interface Props {
-  loggedInUser: User; // User data is passed as a prop
+  loggedInUser: User;
   categoryOptions: Option[];
 }
 
-// Validation Schema
+// Validation Schema (Updated `name` → `title`)
 const validationSchema = yup.object().shape({
-  name: yup.string().required("Name is required"),
+  title: yup.string().required("Title is required"),
   category: yup.array().min(1, "At least one category is required"),
   description: yup.string().required("Description is required"),
-  stock: yup
-    .number()
-    .typeError("Stock must be a number")
-    .required("Stock is required"),
-  price: yup
-    .number()
-    .typeError("Price must be a number")
-    .required("Regular price is required"),
-  sale_price: yup
-    .number()
-    .typeError("Sale price must be a number")
-    .required("Sale price is required"),
+  stock: yup.number().typeError("Stock must be a number").required("Stock is required"),
+  price: yup.number().typeError("Price must be a number").required("Regular price is required"),
+  sale_price: yup.number().typeError("Sale price must be a number").required("Sale price is required"),
   tags: yup.string().required("Tags are required"),
 });
 
-export default function ProductUpdateForm({
-  loggedInUser,
-  categoryOptions,
-}: Props) {
+export default function ProductUpdateForm({ loggedInUser, categoryOptions }: Props) {
   console.log(loggedInUser);
   const {
     register,
@@ -79,7 +67,7 @@ export default function ProductUpdateForm({
     reset
   } = useForm({
     defaultValues: {
-      name: "",
+      title: "",  // Updated field
       price: "",
       tags: "",
       stock: "",
@@ -89,11 +77,8 @@ export default function ProductUpdateForm({
     },
     resolver: yupResolver(validationSchema),
   });
-  const [location, setLocation] = useState<{
-    latitude: number;
-    longitude: number;
-    city: string;
-  } | null>(null);
+
+  const [location, setLocation] = useState<{ latitude: number; longitude: number; city: string } | null>(null);
 
   const onSubmit = async (data: any) => {
     try {
@@ -116,42 +101,34 @@ export default function ProductUpdateForm({
         verified: false,
         coverPicture: "/default-cover.png",
         profilePicture: "/default-profile.png",
-        socialLinks: {
-          facebook: null,
-          youtube: null,
-          twitter: null,
-          instagram: null,
-        },
+        socialLinks: { facebook: null, youtube: null, twitter: null, instagram: null },
       };
-  
-      // Преобразуем `category` в массив значений
+
+      // Convert category to an array of values
       const categoryValues = data.category.map((cat: Option) => cat.value);
-  
-      // Проверяем, есть ли данные о локации
+
+      // Add location if available
       const productLocation = location
-        ? {
-            type: "Point",
-            coordinates: [location.longitude, location.latitude],
-          }
+        ? { type: "Point", coordinates: [location.longitude, location.latitude] }
         : null;
-  
+
       const productData = {
         ...data,
         id: crypto.randomUUID(),
-        slug: data.name.toLowerCase().replace(/\s+/g, "-"),
+        slug: data.title.toLowerCase().replace(/\s+/g, "-"), // Updated field reference
         shop,
-        category: categoryValues, // Передаем только значения категорий
-        location: productLocation, // Добавляем локацию в данные продукта
+        category: categoryValues,
+        location: productLocation,
       };
-  
+
       console.log("Product Data:", productData);
-  
+
       const response = await fetch("http://localhost:4100/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(productData),
       });
-  
+
       if (response.ok) {
         alert("Product created successfully!");
         reset();
@@ -163,33 +140,29 @@ export default function ProductUpdateForm({
       alert("An error occurred while creating the product.");
     }
   };
-  
 
   useEffect(() => {
     const fetchLocation = async () => {
       const loc = await getUserLocation();
       setLocation(loc);
-
+      console.log(loc);
     };
 
     fetchLocation();
   }, []);
 
-
-  
-  console.log(location)
-
   return (
     <Card p="30px" borderRadius={8}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={6}>
+          {/* Updated Field: "Title" instead of "Name" */}
           <Grid item sm={6} xs={12}>
             <TextField
               fullwidth
-              label="Name"
-              placeholder="Name"
-              {...register("name")}
-              errorText={errors.name?.message}
+              label="Title"
+              placeholder="Title"
+              {...register("title")} // Updated reference
+              errorText={errors.title?.message}
             />
           </Grid>
 
@@ -245,6 +218,15 @@ export default function ProductUpdateForm({
               errorText={errors.tags?.message}
             />
           </Grid>
+          <Grid item sm={6} xs={12}>
+            <TextField
+              fullwidth
+              label="Location"
+              placeholder={location?.zip}
+              {...register("tags")}
+              errorText={errors.tags?.message}
+            />
+          </Grid>
 
           <Grid item sm={6} xs={12}>
             <TextField
@@ -267,6 +249,7 @@ export default function ProductUpdateForm({
               errorText={errors.sale_price?.message}
             />
           </Grid>
+          
         </Grid>
 
         <Button mt="25px" variant="contained" color="primary" type="submit">

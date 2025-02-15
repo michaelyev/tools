@@ -4,9 +4,14 @@ import ProductCard1 from "@component/product-cards/ProductCard1";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 // API FUNCTIONS
 import api from "@utils/__api__/market-1";
+import { getProducts } from "@utils/data_fetch/allTools";
 
 export default async function Section11() {
-  const moreItems = await api.getMoreItems();
+  const data =  await getProducts({
+      page: 1,
+      pageSize: 8
+    })
+  const moreItems = data.products
 
   return (
     <Container mb="70px">

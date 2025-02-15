@@ -17,6 +17,9 @@ export default function SearchInputWithCategory() {
   const [resultList, setResultList] = useState([]); // Состояние для результатов
   const [category, setCategory] = useState(""); // Состояние для выбранной категории
   const [searchValue, setSearchValue] = useState(""); // Состояние для текста поиска
+  
+  const categories = ["All Categories", "Earthmoving", "Paint"];
+
 
   // Обработка смены категории
   const handleCategoryChange = useCallback((cat) => {
@@ -78,6 +81,7 @@ export default function SearchInputWithCategory() {
     return () => window.removeEventListener("click", handleDocumentClick);
   }, []);
 
+
   return (
     <Box position="relative" flex="1 1 0" maxWidth="670px" mx="auto">
       <StyledSearchBox onClick={handleSearchBoxClick}>
@@ -123,4 +127,3 @@ export default function SearchInputWithCategory() {
   );
 }
 
-const categories = ["All Categories", "Earthmoving", "Paint"];

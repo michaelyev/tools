@@ -10,9 +10,15 @@ import CategorySectionCreator from "@component/CategorySectionCreator";
 import { calculateDiscount, currency } from "@utils/utils";
 // API FUNCTIONS
 import api from "@utils/__api__/market-1";
+import { getProducts } from "@utils/data_fetch/allTools";
 
 export default async function Section13() {
-  const bigDiscountList = await api.getBigDiscountList();
+
+  const data = await getProducts({
+        page: 1,
+        pageSize: 4
+      })
+      const bigDiscountList = data.products
 
   const responsive = [
     { breakpoint: 1024, settings: { slidesToShow: 5 } },

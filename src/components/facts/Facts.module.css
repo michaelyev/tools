@@ -24,8 +24,7 @@
     width: 30%; /* Ширина карточки */
     padding: 20px;
     border-radius: 8px;
-    text-align: center;
-    height: 150px;
+    height: 172px;
     scroll-snap-align: start; /* Карточка выравнивается по началу */
   }
   
@@ -48,7 +47,6 @@
   .largeItem {
     border-radius: 8px;
     text-align: center;
-    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
