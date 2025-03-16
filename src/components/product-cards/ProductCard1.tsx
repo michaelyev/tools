@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useCallback, useState } from "react";
 import styled from "styled-components";
+import { SkeletonProductCard } from "./SkeletonProductCard1"; // Импортируем скелетон
 
 import { useAppContext } from "@context/app-context";
 
@@ -117,6 +118,7 @@ interface ProductCard1Props extends CardProps {
   rating: number;
   images: string[];
   id?: string | number;
+  isLoading?: boolean; // <-- Prop для загрузки
 }
 // =======================================================================
 
@@ -129,6 +131,7 @@ export default function ProductCard1({
   imgUrl,
   images,
   rating = 4,
+  isLoading = false,
   ...props
 }: ProductCard1Props) {
   const [open, setOpen] = useState(false);
@@ -148,10 +151,14 @@ export default function ProductCard1({
         price,
         imgUrl,
         name: title,
-        qty: amount
-      }
+        qty: amount,
+      },
     });
   };
+
+  if (isLoading) {
+    return <SkeletonProductCard />;
+  }
 
   return (
     <>
@@ -167,7 +174,8 @@ export default function ProductCard1({
               bg="primary.main"
               position="absolute"
               color="primary.text"
-              zIndex={1}>
+              zIndex={1}
+            >
               {off}% off
             </Chip>
           )}
@@ -202,7 +210,8 @@ export default function ProductCard1({
                   textAlign="left"
                   fontWeight="600"
                   className="title"
-                  color="text.secondary">
+                  color="text.secondary"
+                >
                   {title}
                 </H3>
               </Link>
@@ -221,40 +230,6 @@ export default function ProductCard1({
                 )}
               </FlexBox>
             </Box>
-
-            <FlexBox
-              width="30px"
-              alignItems="center"
-              flexDirection="column-reverse"
-              justifyContent={!!cartItem?.qty ? "space-between" : "flex-start"}>
-              <Button
-                size="none"
-                padding="3px"
-                color="primary"
-                variant="outlined"
-                borderColor="primary.light"
-                onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}>
-                <Icon variant="small">plus</Icon>
-              </Button>
-
-              {!!cartItem?.qty && (
-                <Fragment>
-                  <SemiSpan color="text.primary" fontWeight="600">
-                    {cartItem.qty}
-                  </SemiSpan>
-
-                  <Button
-                    size="none"
-                    padding="3px"
-                    color="primary"
-                    variant="outlined"
-                    borderColor="primary.light"
-                    onClick={handleCartAmountChange(cartItem.qty - 1)}>
-                    <Icon variant="small">minus</Icon>
-                  </Button>
-                </Fragment>
-              )}
-            </FlexBox>
           </FlexBox>
         </div>
       </Wrapper>

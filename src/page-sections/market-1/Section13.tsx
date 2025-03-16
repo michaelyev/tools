@@ -9,7 +9,6 @@ import { Carousel } from "@component/carousel";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import { calculateDiscount, currency } from "@utils/utils";
 // API FUNCTIONS
-import api from "@utils/__api__/market-1";
 import { getProducts } from "@utils/data_fetch/allTools";
 
 export default async function Section13() {

@@ -18,25 +18,38 @@ import {
 
 // all used products in the bazaar template
 const productList = [
-  ...dbProducts/* ,
-  ...gift,
-  ...gadget,
-  ...market1,
-  ...market2,
   ...fashion1,
   ...fashion2,
   ...fashion3,
+  ...furniture,
+  ...gadget,
+  ...gift,
   ...grocery1,
   ...grocery2,
   ...grocery3,
-  ...furniture,
   ...healthBeauty,
+  ...market1,
+  ...market2,
   ...relatedProducts,
-  ...frequentlyBoughtData */
+  ...frequentlyBoughtData,
+  ...dbProducts,
 ];
 
+// get unique products from prouct list
+const uniqueProductMap = new Map();
+productList.forEach((product) => {
+  if (!uniqueProductMap.has(product.slug)) {
+    uniqueProductMap.set(product.slug, product);
+  }
+});
+const uniqueProudcts = Array.from(uniqueProductMap.values());
+
+// get unique products from prouct list
+// const uniqueProudcts = [...new Set(productList.map((item) => item.slug))].map(
+//   (item) => productList.find((it) => it.slug === item)
+// );
+
 // get the all slugs
-const slugs = productList.map((item) => ({ params: { slug: item.slug } }));
+const slugs = uniqueProudcts.map((item) => ({ params: { slug: item.slug } }));
 
-export { productList, slugs };
-
+export { uniqueProudcts, slugs };

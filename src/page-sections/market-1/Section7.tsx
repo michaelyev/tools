@@ -18,6 +18,7 @@ import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
 import { getProducts } from "@utils/data_fetch/allTools";
+import { SkeletonProductCard } from "@component/product-cards/SkeletonProductCard1";
 
 // ======================================================
 interface Props {
@@ -145,29 +146,34 @@ export default function Section7({ shops, brands, title, productList, productCat
         <Box flex="1 1 0" minWidth="0px">
           <CategorySectionHeader title={title} seeMoreLink="#" />
 
-          {products.length > 0 && (
-            <Grid container spacing={6}>
-              {products.length > 0 ? ( // <-- Use `products` state instead of undefined `data`
-                products.map((item, ind) => (
-                  <Grid item lg={4} sm={6} xs={12} key={ind}>
-                    <ProductCard1
-                      hoverEffect
-                      id={item.id}
-                      slug={item.slug}
-                      title={item.title}
-                      price={item.price}
-                      off={item.discount}
-                      rating={item.rating}
-                      images={item.images}
-                      imgUrl={item.thumbnail}
-                    />
-                  </Grid>
-                ))
-              ) : (
-                <Typography>No products found</Typography> // Handle empty state
-              )}
-            </Grid>
-          )}
+          {products.length > 0 ? (
+  <Grid container spacing={6}>
+    {products.map((item, ind) => (
+      <Grid item lg={4} sm={6} xs={12} key={ind}>
+        <ProductCard1
+          hoverEffect
+          id={item.id}
+          slug={item.slug}
+          title={item.title}
+          price={item.price}
+          off={item.discount}
+          rating={item.rating}
+          images={item.images}
+          imgUrl={item.thumbnail}
+        />
+      </Grid>
+    ))}
+  </Grid>
+) : (
+  <Grid container spacing={6}>
+    {Array.from({ length: 6 }).map((_, index) => (
+      <Grid item lg={4} sm={6} xs={12} key={index}>
+        <SkeletonProductCard />
+      </Grid>
+    ))}
+  </Grid>
+)}
+
         </Box>
       </FlexBox>
     </Container>
