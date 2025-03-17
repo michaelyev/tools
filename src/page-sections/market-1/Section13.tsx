@@ -27,7 +27,11 @@ export default async function Section13() {
   ];
 
   return (
-    <CategorySectionCreator iconName="gift" title="Big Discounts" seeMoreLink="#">
+    <CategorySectionCreator
+      iconName="gift"
+      title="Big Discounts"
+      seeMoreLink="#"
+    >
       <Box my="-0.25rem">
         <Carousel dots slidesToShow={6} responsive={responsive}>
           {bigDiscountList.map((item) => (
@@ -35,15 +39,26 @@ export default async function Section13() {
               <Card p="1rem" borderRadius={8}>
                 <Link href={`/product/${item.slug}`}>
                   <HoverBox borderRadius={8} mb="0.5rem" display="flex">
-                    <NextImage width={500} height={500} alt={item.title} src={item.thumbnail} />
+                    <NextImage
+                    style={{height: 152}}
+                      width={152}
+                      height={152}
+                      alt={item.title}
+                      src={item.thumbnail}
+                    />
                   </HoverBox>
 
-                  <H4 fontWeight="600" fontSize="14px" mb="0.25rem">
+                  <H4 style={{height: 90, overflowY: 'hidden'}} fontWeight="600" fontSize="14px" mb="0.25rem">
                     {item.title}
                   </H4>
 
                   <FlexBox>
-                    <H4 fontWeight="600" fontSize="14px" color="primary.main" mr="0.5rem">
+                    <H4
+                      fontWeight="600"
+                      fontSize="14px"
+                      color="primary.main"
+                      mr="0.5rem"
+                    >
                       {calculateDiscount(item.price, item.discount)}
                     </H4>
 

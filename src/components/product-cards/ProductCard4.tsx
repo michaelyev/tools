@@ -21,7 +21,7 @@ export default function ProductCard4(props: ProductCard4Props) {
   return (
     <div>
       <HoverBox mb="1rem" mx="auto" borderRadius={8} display="flex">
-        <NextImage src={imgUrl} width={100} height={100} alt={title} />
+        <NextImage style={{height: 127}} src={imgUrl} width={127} height={127} alt={title} />
       </HoverBox>
 
       <FlexBox justifyContent="center" alignItems="center" mb="0.25rem">
@@ -32,11 +32,23 @@ export default function ProductCard4(props: ProductCard4Props) {
         </Small>
       </FlexBox>
 
-      <H4 fontWeight="600" fontSize="14px" textAlign="center" mb="0.25rem" title={title} ellipsis>
+      <H4
+        fontWeight="600"
+        fontSize="14px"
+        textAlign="center"
+        mb="0.25rem"
+        title={title}
+        ellipsis
+      >
         {title}
       </H4>
 
-      <H4 fontWeight="600" fontSize="14px" textAlign="center" color="primary.main">
+      <H4
+        fontWeight="600"
+        fontSize="14px"
+        textAlign="center"
+        color="primary.main"
+      >
         {currency(price)}
       </H4>
     </div>

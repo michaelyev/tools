@@ -195,7 +195,13 @@ export default function ProductCard1({
           </FlexBox>
 
           <Link href={`/product/${slug}`}>
-            <NextImage alt={title} width={277} src={imgUrl} height={270} />
+            <NextImage
+              style={{ width: "285px", height: "285px" }}
+              alt={title + " image"}
+              width={285}
+              src={imgUrl}
+              height={285}
+            />
           </Link>
         </div>
 
