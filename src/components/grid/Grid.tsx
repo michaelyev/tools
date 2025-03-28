@@ -18,12 +18,16 @@ export default function Grid({
   let childList = children;
 
   if (props.container) {
+    // Filter out null or undefined children before cloning them
     childList = Children.map(children, (child) => {
-      return cloneElement(child, {
-        spacing: spacing,
-        vertical_spacing: vertical_spacing,
-        horizontal_spacing: horizontal_spacing
-      });
+      if (child) {
+        return cloneElement(child, {
+          spacing: spacing,
+          vertical_spacing: vertical_spacing,
+          horizontal_spacing: horizontal_spacing,
+        });
+      }
+      return null; // If child is null or undefined, return null
     });
   }
 
