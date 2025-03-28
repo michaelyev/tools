@@ -2,7 +2,7 @@
 .container {
     display: grid;
     grid-template-columns: 3fr 3fr; /* Две колонки для больших экранов */
-    gap: 16px;
+    gap: 1.5rem;
     align-items: center;
     width: 100%;
     max-width: 1200px;
@@ -12,21 +12,34 @@
   /* Маленькие элементы (левая часть) */
   .smallItems {
     display: flex;
-    gap: 3vh;
+    gap: 1.5rem;
     overflow-x: auto; /* Горизонтальная прокрутка */
     scroll-snap-type: x mandatory; /* Плавный скроллинг карточек */
     -webkit-overflow-scrolling: touch; /* Для лучшей прокрутки на iOS */
-  }
-  
-  /* Каждая карточка */
-  .card {
+}
+
+.card {
     flex: 0 0 auto; /* Карточки не уменьшаются и занимают минимальное пространство */
     width: 30%; /* Ширина карточки */
     padding: 20px;
     border-radius: 8px;
     height: 172px;
     scroll-snap-align: start; /* Карточка выравнивается по началу */
-  }
+}
+
+/* Отключение прокрутки и растягивание карточек на больших экранах */
+@media (min-width: 768px) {
+    .smallItems {
+        overflow-x: visible; /* Убираем прокрутку */
+       /* Переносим карточки на новую строку, если не помещаются */
+    }
+
+    .card {
+        flex: 1 1 calc(33.333% - 3vh); /* Равномерное распределение карточек по ширине */
+        scroll-snap-align: none;
+    }
+}
+
   
   /* Красная карточка */
   .cardRed {

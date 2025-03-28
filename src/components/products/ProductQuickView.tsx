@@ -14,6 +14,7 @@ type Props = {
   product: {
     slug: string;
     title: string;
+    brand: string;
     price: number;
     images: string[];
     id: string | number;
@@ -22,11 +23,13 @@ type Props = {
 // ===================================================
 
 export default function ProductQuickView({ open, onClose, product }: Props) {
+  console.log(product)
   return (
     <Modal open={open} onClose={onClose}>
       <Card p="1rem" width="100%" maxWidth="800px" borderRadius={8} position="relative">
         <ProductIntro
           id={product.id}
+          brand={product.brand}
           title={product.title}
           price={product.price}
           images={product.images}

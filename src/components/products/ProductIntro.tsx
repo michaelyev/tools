@@ -19,13 +19,14 @@ import { currency } from "@utils/utils";
 // ========================================
 interface Props {
   price: number;
+  brand: string;
   title: string;
   images: string[];
   id: string | number;
 }
 // ========================================
 
-export default function ProductIntro({ images, title, price, id }: Props) {
+export default function ProductIntro({ brand, images, title, price, id }: Props) {
   const param = useParams();
   const { state, dispatch } = useAppContext();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -47,6 +48,7 @@ export default function ProductIntro({ images, title, price, id }: Props) {
       }
     });
   };
+  console.log(price)
 
   return (
     <Box overflow="hidden">
@@ -91,7 +93,7 @@ export default function ProductIntro({ images, title, price, id }: Props) {
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>Brand:</SemiSpan>
-            <H6 ml="8px">Ziaomi</H6>
+            <H6 ml="8px">{brand}</H6>
           </FlexBox>
 
           <FlexBox alignItems="center" mb="1rem">

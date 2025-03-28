@@ -10,7 +10,7 @@ export default function ProductCard5({ imgUrl, title }: ProductCard5Props) {
   return (
     <div>
       <HoverBox borderRadius={5} mb="0.5rem" display="flex">
-        <NextImage alt={title} src={imgUrl} width={260} height={175} />
+        <NextImage style={{height: 127}} alt={title} src={imgUrl} width={260} height={175} />
       </HoverBox>
 
       <H4 fontSize="14px" fontWeight="600">

@@ -12,7 +12,7 @@ export default async function Section10() {
 
   return (
     <Container mb="70px">
-      <CategorySectionHeader title="Categories" iconName="categories" seeMoreLink="#" />
+      <CategorySectionHeader title="Categories" iconName="categories" seeMoreLink="products" />
 
       <Grid container spacing={6}>
         {categories.map((item) => (

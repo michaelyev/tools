@@ -4,51 +4,20 @@ import styled from "styled-components";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useEffect, useState } from "react";
 
 import Card from "@component/Card";
-import Image from "@component/Image";
 import Select from "@component/Select";
 import Grid from "@component/grid/Grid";
-import FlexBox from "@component/FlexBox";
 import DropZone from "@component/DropZone";
 import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
 import { getUserLocation } from "@utils/location_fetch/location_fetch";
-import { useEffect, useState } from "react";
 
-// Styled Component
-const UploadImageBox = styled("div")(({ theme }) => ({
-  width: 70,
-  height: 70,
-  display: "flex",
-  overflow: "hidden",
-  borderRadius: "8px",
-  marginRight: ".5rem",
-  position: "relative",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: theme.colors.primary[100],
-}));
-
-// Types
-type Option = { label: string; value: string };
-type User = {
-  id: string;
-  email: string;
-  name: string;
-  image?: string;
-};
-
-interface Props {
-  loggedInUser: User;
-  categoryOptions: Option[];
-}
-
-// Validation Schema (Updated `name` → `title`)
 const validationSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
-  category: yup.array().min(1, "At least one category is required"),
+  category: yup.string().required("Category is required"),
   description: yup.string().required("Description is required"),
   stock: yup.number().typeError("Stock must be a number").required("Stock is required"),
   price: yup.number().typeError("Price must be a number").required("Regular price is required"),
@@ -56,72 +25,38 @@ const validationSchema = yup.object().shape({
   tags: yup.string().required("Tags are required"),
 });
 
-export default function ProductUpdateForm({ loggedInUser, categoryOptions }: Props) {
-  console.log(loggedInUser);
+export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
     setValue,
-    reset
+    reset,
   } = useForm({
     defaultValues: {
-      title: "",  // Updated field
+      title: "",
       price: "",
       tags: "",
       stock: "",
       sale_price: "",
       description: "",
-      category: [],
+      category: "",
     },
     resolver: yupResolver(validationSchema),
   });
 
-  const [location, setLocation] = useState<{ latitude: number; longitude: number; city: string } | null>(null);
+  const [location, setLocation] = useState(null);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data) => {
     try {
-      const shop = {
-        id: crypto.randomUUID(),
-        slug: loggedInUser?.name?.toLowerCase().replace(/\s+/g, "-") || "unknown-shop",
-        user: {
-          id: crypto.randomUUID(),
-          email: loggedInUser?.email || "unknown-email",
-          avatar: loggedInUser?.image || "/default-avatar.png",
-          name: {
-            firstName: loggedInUser?.name?.split(" ")[0] || "First",
-            lastName: loggedInUser?.name?.split(" ")[1] || "Last",
-          },
-        },
-        email: loggedInUser?.email || "unknown-email",
-        name: loggedInUser?.name || "Unknown Shop",
-        phone: "123-456-7890",
-        address: "Default Address",
-        verified: false,
-        coverPicture: "/default-cover.png",
-        profilePicture: "/default-profile.png",
-        socialLinks: { facebook: null, youtube: null, twitter: null, instagram: null },
-      };
-
-      // Convert category to an array of values
-      const categoryValues = data.category.map((cat: Option) => cat.value);
-
-      // Add location if available
-      const productLocation = location
-        ? { type: "Point", coordinates: [location.longitude, location.latitude] }
-        : null;
-
       const productData = {
         ...data,
         id: crypto.randomUUID(),
-        slug: data.title.toLowerCase().replace(/\s+/g, "-"), // Updated field reference
-        shop,
-        category: categoryValues,
-        location: productLocation,
+        slug: data.title.toLowerCase().replace(/\s+/g, "-"),
+        category: data.category.trim(), // Гарантируем, что это строка
+        location: location ? { type: "Point", coordinates: [location.longitude, location.latitude] } : null,
       };
-
-      console.log("Product Data:", productData);
 
       const response = await fetch("http://localhost:4100/products", {
         method: "POST",
@@ -142,26 +77,19 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }: Pro
   };
 
   useEffect(() => {
-    const fetchLocation = async () => {
-      const loc = await getUserLocation();
-      setLocation(loc);
-      console.log(loc);
-    };
-
-    fetchLocation();
+    getUserLocation().then(setLocation);
   }, []);
 
   return (
     <Card p="30px" borderRadius={8}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={6}>
-          {/* Updated Field: "Title" instead of "Name" */}
           <Grid item sm={6} xs={12}>
             <TextField
               fullwidth
               label="Title"
               placeholder="Title"
-              {...register("title")} // Updated reference
+              {...register("title")}
               errorText={errors.title?.message}
             />
           </Grid>
@@ -170,15 +98,15 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }: Pro
             <Controller
               name="category"
               control={control}
+              defaultValue=""
               render={({ field }) => (
                 <Select
-                  isMulti
                   label="Category"
                   options={categoryOptions}
                   placeholder="Select category"
-                  {...field}
+                  value={categoryOptions.find((option) => option.value === field.value) || ""}
+                  onChange={(selectedOption) => setValue("category", selectedOption?.value || "")}
                   errorText={errors.category?.message}
-                  onChange={(value) => setValue("category", value)}
                 />
               )}
             />
@@ -218,15 +146,6 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }: Pro
               errorText={errors.tags?.message}
             />
           </Grid>
-          <Grid item sm={6} xs={12}>
-            <TextField
-              fullwidth
-              label="Location"
-              placeholder={location?.zip}
-              {...register("tags")}
-              errorText={errors.tags?.message}
-            />
-          </Grid>
 
           <Grid item sm={6} xs={12}>
             <TextField
@@ -249,7 +168,6 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }: Pro
               errorText={errors.sale_price?.message}
             />
           </Grid>
-          
         </Grid>
 
         <Button mt="25px" variant="contained" color="primary" type="submit">

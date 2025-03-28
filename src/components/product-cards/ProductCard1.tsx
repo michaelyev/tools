@@ -115,6 +115,7 @@ interface ProductCard1Props extends CardProps {
   title: string;
   price: number;
   imgUrl: string;
+  brand: string;
   rating: number;
   images: string[];
   id?: string | number;
@@ -128,6 +129,7 @@ export default function ProductCard1({
   slug,
   title,
   price,
+  brand,
   imgUrl,
   images,
   rating = 4,
@@ -243,7 +245,7 @@ export default function ProductCard1({
       <ProductQuickView
         open={open}
         onClose={toggleDialog}
-        product={{ images, title, price, id: id as number | string, slug }}
+        product={{ images, title, price, id: id as number | string, slug, brand }}
       />
     </>
   );

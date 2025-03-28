@@ -16,6 +16,7 @@ export async function getProducts({
 }) {
   try {
     // Construct the URL path dynamically
+    console.log(subCategory[0])
     const path = [
       "http://localhost:4100/products",
       category,
@@ -33,6 +34,7 @@ export async function getProducts({
         page,
         size: pageSize,
         email,
+        subCategory,
         id,
         slug,
         lat,

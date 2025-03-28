@@ -19,6 +19,7 @@ export default function ProductGridView({ products, total }: Props) {
               slug={item.slug}
               price={item.price}
               title={item.title}
+              brand={item.brand}
               off={item.discount}
               images={item.images}
               imgUrl={item.thumbnail}

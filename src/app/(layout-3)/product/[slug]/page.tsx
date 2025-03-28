@@ -20,7 +20,7 @@ export default async function ProductDetails({ params }: Props) {
   const frequentlyBought = await api.getFrequentlyBought();
   const product = await getProducts({slug: slug})
   const productInfo = product.products[0]
-/* console.log(productInfo.description) */
+console.log(productInfo)
   return (
     <Container>
       <Fragment>
@@ -29,6 +29,7 @@ export default async function ProductDetails({ params }: Props) {
           price={productInfo.price}
           title={productInfo.title}
           images={productInfo.images}
+          brand={productInfo.brand}
           
         />
 

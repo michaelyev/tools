@@ -31,7 +31,7 @@ export default async function ProductSearchResult({
   console.log(params?.search)
 
   const products = await getProducts({
-    page: currentPage, category: category, subСategory: subCategory, subSubcategory: subSubCategory
+    page: currentPage, category: category, subCategory: subCategory, subSubcategory: subSubCategory
   });
 
   return (
