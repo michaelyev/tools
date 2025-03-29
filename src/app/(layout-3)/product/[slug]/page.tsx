@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-
 import api from "@utils/__api__/products";
 import ProductIntro from "@component/products/ProductIntro";
 import ProductView from "@component/products/ProductView";
@@ -18,9 +17,24 @@ export default async function ProductDetails({ params }: Props) {
   const shops = await api.getAvailableShop();
   const relatedProducts = await api.getRelatedProducts();
   const frequentlyBought = await api.getFrequentlyBought();
-  const product = await getProducts({slug: slug})
-  const productInfo = product.products[0]
-console.log(productInfo)
+  const product = await getProducts({ slug });
+
+  const productInfo = product.products?.[0];
+
+  if (!productInfo) {
+    console.error("❌ Product not found for slug:", slug);
+    return <div>Product not found</div>;
+  }
+
+  // 🔐 Ensure images is always an array
+  productInfo.images = Array.isArray(productInfo.images)
+    ? productInfo.images
+    : productInfo.images
+    ? [productInfo.images]
+    : [];
+
+  console.log("✅ Product loaded:", productInfo);
+
   return (
     <Container>
       <Fragment>
@@ -30,7 +44,6 @@ console.log(productInfo)
           title={productInfo.title}
           images={productInfo.images}
           brand={productInfo.brand}
-          
         />
 
         <ProductView

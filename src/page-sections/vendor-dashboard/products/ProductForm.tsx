@@ -4,23 +4,25 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
+import { CldUploadWidget } from "next-cloudinary";
 
 import Card from "@component/Card";
 import Select from "@component/Select";
 import Grid from "@component/grid/Grid";
-import DropZone from "@component/DropZone";
 import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
 import Typography from "@component/Typography";
 import { getUserLocation } from "@utils/location_fetch/location_fetch";
 
-// ✅ Валидация
 const validationSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
   category: yup.string().required("Category is required"),
   description: yup.string().required("Description is required"),
-  price: yup.number().typeError("Price must be a number").required("Regular price is required"),
+  price: yup
+    .number()
+    .typeError("Price must be a number")
+    .required("Regular price is required"),
   tags: yup.string(),
   rent: yup.boolean().notRequired(),
   daily_price: yup.number().when("rent", {
@@ -64,20 +66,26 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
   });
 
   const [location, setLocation] = useState(null);
+  const [imageUrls, setImageUrls] = useState([]);
   const rentSelected = watch("rent");
 
   useEffect(() => {
-    getUserLocation().then(setLocation);
+    getUserLocation().then((loc) => {
+      console.log("📍 User location:", loc);
+      setLocation(loc);
+    });
   }, []);
 
   const onSubmit = async (data) => {
     try {
+      console.log("🚀 Submitting product form...");
+      console.log("🖼 Image URLs:", imageUrls);
+
       if (!location) {
         alert("Location not available. Please allow location access.");
         return;
       }
 
-      // 👇 Фоллбек логика создания shop, если его нет в loggedInUser
       const shop = loggedInUser?.shop || {
         id: crypto.randomUUID(),
         slug: loggedInUser?.name?.toLowerCase().replace(/\s+/g, "-") || "unknown-shop",
@@ -127,7 +135,10 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
           coordinates: [location.longitude, location.latitude],
         },
         shop,
+        images: imageUrls,
       };
+
+      console.log("📦 Sending product data to backend:", productData);
 
       const response = await fetch("http://localhost:4100/products", {
         method: "POST",
@@ -138,6 +149,7 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
       if (response.ok) {
         alert("✅ Product created successfully!");
         reset();
+        setImageUrls([]);
       } else {
         const err = await response.json();
         console.error("❌ Backend error:", err);
@@ -154,7 +166,12 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={6}>
           <Grid item sm={6} xs={12}>
-            <TextField fullwidth label="Title" {...register("title")} errorText={errors.title?.message} />
+            <TextField
+              fullwidth
+              label="Title"
+              {...register("title")}
+              errorText={errors.title?.message}
+            />
           </Grid>
 
           <Grid item sm={6} xs={12}>
@@ -165,7 +182,9 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
                 <Select
                   label="Category"
                   options={categoryOptions}
-                  value={categoryOptions.find((o) => o.value === field.value) || ""}
+                  value={
+                    categoryOptions.find((o) => o.value === field.value) || ""
+                  }
                   onChange={(val) => setValue("category", val?.value || "")}
                   errorText={errors.category?.message}
                 />
@@ -174,27 +193,104 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
           </Grid>
 
           <Grid item xs={12}>
-            <DropZone onChange={(files) => console.log("Files uploaded:", files)} />
+          <CldUploadWidget
+  signatureEndpoint={{
+    url: "/api/cloudinary-signature",
+    method: "POST",
+  }}
+  options={{
+    folder: "products",
+    use_filename: true,
+    multiple: true,
+    maxFiles: 5,
+    source: "local", // можешь указать "local", "camera" и т.д.
+  }}
+  onUpload={(result) => {
+    console.log("📤 Upload result:", result); // ← Логай весь результат
+
+    if (result.event === "success") {
+      console.log("✅ Image uploaded:", result.info.secure_url);
+      setImageUrls((prev) => [...prev, result.info.secure_url]);
+    }
+
+    if (result.event === "error") {
+      console.error("❌ Upload error:", result.info);
+    }
+  }}
+>
+  {({ open }) => (
+    <Button type="button" onClick={() => {
+      console.log("📸 Opening Cloudinary widget...");
+      open();
+    }}>
+      Upload Image
+    </Button>
+  )}
+</CldUploadWidget>
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                marginTop: "20px",
+              }}
+            >
+              {imageUrls.map((url, idx) => (
+                <img
+                  key={idx}
+                  src={url}
+                  alt={`uploaded-${idx}`}
+                  width={120}
+                  style={{ borderRadius: 8 }}
+                />
+              ))}
+            </div>
           </Grid>
 
           <Grid item xs={12}>
-            <TextArea fullwidth label="Description" {...register("description")} errorText={errors.description?.message} />
+            <TextArea
+              fullwidth
+              label="Description"
+              {...register("description")}
+              errorText={errors.description?.message}
+            />
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField fullwidth label="Stock" {...register("stock")} errorText={errors.stock?.message} />
+            <TextField
+              fullwidth
+              label="Stock"
+              {...register("stock")}
+              errorText={errors.stock?.message}
+            />
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField fullwidth label="Tags" {...register("tags")} errorText={errors.tags?.message} />
+            <TextField
+              fullwidth
+              label="Tags"
+              {...register("tags")}
+              errorText={errors.tags?.message}
+            />
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField fullwidth label="Price" {...register("price")} errorText={errors.price?.message} />
+            <TextField
+              fullwidth
+              label="Price"
+              {...register("price")}
+              errorText={errors.price?.message}
+            />
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField fullwidth label="Sale Price" {...register("sale_price")} errorText={errors.sale_price?.message} />
+            <TextField
+              fullwidth
+              label="Sale Price"
+              {...register("sale_price")}
+              errorText={errors.sale_price?.message}
+            />
           </Grid>
 
           <Grid item xs={12}>
@@ -219,13 +315,28 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
         {rentSelected && (
           <Grid container spacing={6}>
             <Grid item sm={4} xs={12}>
-              <TextField fullwidth label="Daily Price" {...register("daily_price")} errorText={errors.daily_price?.message} />
+              <TextField
+                fullwidth
+                label="Daily Price"
+                {...register("daily_price")}
+                errorText={errors.daily_price?.message}
+              />
             </Grid>
             <Grid item sm={4} xs={12}>
-              <TextField fullwidth label="Weekly Price" {...register("weekly_price")} errorText={errors.weekly_price?.message} />
+              <TextField
+                fullwidth
+                label="Weekly Price"
+                {...register("weekly_price")}
+                errorText={errors.weekly_price?.message}
+              />
             </Grid>
             <Grid item sm={4} xs={12}>
-              <TextField fullwidth label="Monthly Price" {...register("monthly_price")} errorText={errors.monthly_price?.message} />
+              <TextField
+                fullwidth
+                label="Monthly Price"
+                {...register("monthly_price")}
+                errorText={errors.monthly_price?.message}
+              />
             </Grid>
           </Grid>
         )}
