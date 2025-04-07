@@ -3,8 +3,8 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useEffect, useState } from "react";
-import { CldUploadWidget } from "next-cloudinary";
+import { useEffect, useRef, useState } from "react";
+import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 
 import Card from "@component/Card";
 import Select from "@component/Select";
@@ -19,10 +19,7 @@ const validationSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
   category: yup.string().required("Category is required"),
   description: yup.string().required("Description is required"),
-  price: yup
-    .number()
-    .typeError("Price must be a number")
-    .required("Regular price is required"),
+  price: yup.number().typeError("Price must be a number").required("Price is required"),
   tags: yup.string(),
   rent: yup.boolean().notRequired(),
   daily_price: yup.number().when("rent", {
@@ -67,97 +64,66 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
 
   const [location, setLocation] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
+  const [widgetReady, setWidgetReady] = useState(false);
+
   const rentSelected = watch("rent");
+  const titleSlug = watch("title")?.trim().toLowerCase().replace(/\s+/g, "-");
 
   useEffect(() => {
     getUserLocation().then((loc) => {
-      console.log("📍 User location:", loc);
       setLocation(loc);
     });
   }, []);
 
+  const removeImage = (index) => {
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const onSubmit = async (data) => {
-    try {
-      console.log("🚀 Submitting product form...");
-      console.log("🖼 Image URLs:", imageUrls);
+    if (!location) return alert("Location not available.");
+    if (imageUrls.length === 0) return alert("Please upload at least one image.");
 
-      if (!location) {
-        alert("Location not available. Please allow location access.");
-        return;
-      }
+    const rentFields = data.rent
+      ? {
+          daily_price: Number(data.daily_price),
+          weekly_price: Number(data.weekly_price),
+          monthly_price: Number(data.monthly_price),
+        }
+      : {};
 
-      const shop = loggedInUser?.shop || {
-        id: crypto.randomUUID(),
-        slug: loggedInUser?.name?.toLowerCase().replace(/\s+/g, "-") || "unknown-shop",
-        user: {
-          id: crypto.randomUUID(),
-          email: loggedInUser?.email || "unknown-email",
-          avatar: loggedInUser?.image || "/default-avatar.png",
-          name: {
-            firstName: loggedInUser?.name?.split(" ")[0] || "First",
-            lastName: loggedInUser?.name?.split(" ")[1] || "Last",
-          },
-        },
-        email: loggedInUser?.email || "unknown-email",
-        name: loggedInUser?.name || "Unknown Shop",
-        phone: "123-456-7890",
-        address: "Default Address",
-        verified: false,
-        coverPicture: "/default-cover.png",
-        profilePicture: "/default-profile.png",
-        socialLinks: {
-          facebook: null,
-          youtube: null,
-          twitter: null,
-          instagram: null,
-        },
-      };
+    const shop = loggedInUser?.shop || {/* fallback shop data */};
 
-      const rentFields = data.rent
-        ? {
-            daily_price: Number(data.daily_price),
-            weekly_price: Number(data.weekly_price),
-            monthly_price: Number(data.monthly_price),
-          }
-        : {};
+    const productData = {
+      ...data,
+      ...rentFields,
+      id: crypto.randomUUID(),
+      slug: titleSlug,
+      price: Number(data.price),
+      sale_price: Number(data.sale_price),
+      stock: Number(data.stock),
+      category: data.category.trim(),
+      location: {
+        type: "Point",
+        coordinates: [location.longitude, location.latitude],
+      },
+      shop,
+      thumbnail: imageUrls[0],
+      images: imageUrls,
+    };
 
-      const productData = {
-        ...data,
-        ...rentFields,
-        id: crypto.randomUUID(),
-        slug: data.title.toLowerCase().replace(/\s+/g, "-"),
-        price: Number(data.price),
-        sale_price: Number(data.sale_price),
-        stock: Number(data.stock),
-        category: data.category.trim(),
-        location: {
-          type: "Point",
-          coordinates: [location.longitude, location.latitude],
-        },
-        shop,
-        images: imageUrls,
-      };
+    const response = await fetch("http://localhost:4100/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(productData),
+    });
 
-      console.log("📦 Sending product data to backend:", productData);
-
-      const response = await fetch("http://localhost:4100/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(productData),
-      });
-
-      if (response.ok) {
-        alert("✅ Product created successfully!");
-        reset();
-        setImageUrls([]);
-      } else {
-        const err = await response.json();
-        console.error("❌ Backend error:", err);
-        alert("❌ Failed to create product.");
-      }
-    } catch (error) {
-      console.error("❗ Unexpected error:", error);
-      alert("❗ An unexpected error occurred.");
+    if (response.ok) {
+      alert("✅ Product created successfully!");
+      reset();
+      setImageUrls([]);
+    } else {
+      const err = await response.json();
+      alert("❌ Failed: " + err?.message);
     }
   };
 
@@ -166,12 +132,7 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={6}>
           <Grid item sm={6} xs={12}>
-            <TextField
-              fullwidth
-              label="Title"
-              {...register("title")}
-              errorText={errors.title?.message}
-            />
+            <TextField fullwidth label="Title" {...register("title")} errorText={errors.title?.message} />
           </Grid>
 
           <Grid item sm={6} xs={12}>
@@ -182,9 +143,7 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
                 <Select
                   label="Category"
                   options={categoryOptions}
-                  value={
-                    categoryOptions.find((o) => o.value === field.value) || ""
-                  }
+                  value={categoryOptions.find((o) => o.value === field.value) || ""}
                   onChange={(val) => setValue("category", val?.value || "")}
                   errorText={errors.category?.message}
                 />
@@ -193,104 +152,78 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
           </Grid>
 
           <Grid item xs={12}>
-          <CldUploadWidget
-  signatureEndpoint={{
-    url: "/api/cloudinary-signature",
-    method: "POST",
-  }}
-  options={{
-    folder: "products",
-    use_filename: true,
-    multiple: true,
-    maxFiles: 5,
-    source: "local", // можешь указать "local", "camera" и т.д.
-  }}
-  onUpload={(result) => {
-    console.log("📤 Upload result:", result); // ← Логай весь результат
-
-    if (result.event === "success") {
-      console.log("✅ Image uploaded:", result.info.secure_url);
-      setImageUrls((prev) => [...prev, result.info.secure_url]);
-    }
-
-    if (result.event === "error") {
-      console.error("❌ Upload error:", result.info);
-    }
-  }}
->
-  {({ open }) => (
-    <Button type="button" onClick={() => {
-      console.log("📸 Opening Cloudinary widget...");
-      open();
-    }}>
-      Upload Image
-    </Button>
-  )}
-</CldUploadWidget>
-
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                marginTop: "20px",
+            <CldUploadWidget
+              signatureEndpoint="/api/cloudinary-signature"
+              options={{
+                folder: `products/name/${loggedInUser.email}/${titleSlug}`,
+                multiple: true,
+                maxFiles: 10,
+                sources: ["local"],
+              }}
+              onUploadAdded={() => setWidgetReady(true)}
+              onSuccess={(result) => {
+                const secureUrl = (result.info as CloudinaryUploadWidgetInfo).secure_url;
+                if (secureUrl) {
+                  setImageUrls((prev) => [...prev, secureUrl]);
+                }
               }}
             >
+              {({ open }) => (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    if (titleSlug === "temp") {
+                      alert("Please enter a valid title before uploading.");
+                      return;
+                    }
+                    open();
+                  }}
+                >
+                  Upload Image
+                </Button>
+              )}
+            </CldUploadWidget>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "20px" }}>
               {imageUrls.map((url, idx) => (
-                <img
-                  key={idx}
-                  src={url}
-                  alt={`uploaded-${idx}`}
-                  width={120}
-                  style={{ borderRadius: 8 }}
-                />
+                <div key={idx} style={{ position: "relative" }}>
+                  <img
+                    src={url}
+                    width={120}
+                    style={{ borderRadius: 8 }}
+                    alt={`uploaded-${idx}`}
+                  />
+                  <Button
+                    style={{ position: "absolute", top: 0, right: 0 }}
+                    size="sm"
+                    variant="outlined"
+                    onClick={() => removeImage(idx)}
+                  >
+                    ✕
+                  </Button>
+                </div>
               ))}
             </div>
           </Grid>
 
           <Grid item xs={12}>
-            <TextArea
-              fullwidth
-              label="Description"
-              {...register("description")}
-              errorText={errors.description?.message}
-            />
+            <TextArea fullwidth label="Description" {...register("description")} errorText={errors.description?.message} />
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField
-              fullwidth
-              label="Stock"
-              {...register("stock")}
-              errorText={errors.stock?.message}
-            />
+            <TextField fullwidth label="Stock" {...register("stock")} errorText={errors.stock?.message} />
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField
-              fullwidth
-              label="Tags"
-              {...register("tags")}
-              errorText={errors.tags?.message}
-            />
+            <TextField fullwidth label="Tags" {...register("tags")} errorText={errors.tags?.message} />
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField
-              fullwidth
-              label="Price"
-              {...register("price")}
-              errorText={errors.price?.message}
-            />
+            <TextField fullwidth label="Price" {...register("price")} errorText={errors.price?.message} />
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField
-              fullwidth
-              label="Sale Price"
-              {...register("sale_price")}
-              errorText={errors.sale_price?.message}
-            />
+            <TextField fullwidth label="Sale Price" {...register("sale_price")} errorText={errors.sale_price?.message} />
           </Grid>
 
           <Grid item xs={12}>
@@ -306,8 +239,7 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
                     onChange={(e) => setValue("rent", e.target.checked)}
                   />
                 )}
-              />
-              Rent this item
+              /> Rent this item
             </label>
           </Grid>
         </Grid>
@@ -315,28 +247,13 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
         {rentSelected && (
           <Grid container spacing={6}>
             <Grid item sm={4} xs={12}>
-              <TextField
-                fullwidth
-                label="Daily Price"
-                {...register("daily_price")}
-                errorText={errors.daily_price?.message}
-              />
+              <TextField fullwidth label="Daily Price" {...register("daily_price")} errorText={errors.daily_price?.message} />
             </Grid>
             <Grid item sm={4} xs={12}>
-              <TextField
-                fullwidth
-                label="Weekly Price"
-                {...register("weekly_price")}
-                errorText={errors.weekly_price?.message}
-              />
+              <TextField fullwidth label="Weekly Price" {...register("weekly_price")} errorText={errors.weekly_price?.message} />
             </Grid>
             <Grid item sm={4} xs={12}>
-              <TextField
-                fullwidth
-                label="Monthly Price"
-                {...register("monthly_price")}
-                errorText={errors.monthly_price?.message}
-              />
+              <TextField fullwidth label="Monthly Price" {...register("monthly_price")} errorText={errors.monthly_price?.message} />
             </Grid>
           </Grid>
         )}

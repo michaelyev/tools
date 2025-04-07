@@ -21,6 +21,7 @@ import Container from "@component/Container";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import Facts from "@component/facts/Facts";
 import { getProducts } from "@utils/data_fetch/allTools";
+import Projects from "@component/Orders/Projects";
 
 
 export default async function Home() {
@@ -48,6 +49,8 @@ export default async function Home() {
 
       {/* CATEGORIES AREA */}
       <Section10 />
+
+      <Projects />
 
       {/* FLASH DEAL PRODUCTS AREA */}
       <Section2 />
