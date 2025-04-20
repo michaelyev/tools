@@ -24,7 +24,7 @@ export default function CheckoutForm2() {
   const [hasVoucher, setHasVoucher] = useState(false);
 
   const handleFormSubmit = async (values: any) => {
-    console.log(values);
+    /* console.log(values); */
     router.push("/payment");
   };
 

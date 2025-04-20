@@ -4,8 +4,8 @@ import { productList, slugs } from "./data";
 
 export const productApiEndpoints = (Mock: MockAdapter) => {
   Mock.onGet("/api/products").reply(async (config) => {
-    console.log(config.params?.email)
-    try {
+/*     console.log(config.params?.email)
+ */    try {
       const page = config.params?.page || 1;
       const pageSize = config.params?.pageSize || 28;
       const email = config.params?.email; // Get email from query params

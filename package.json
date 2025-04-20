@@ -48,7 +48,8 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.13",
     "styled-system": "^5.1.5",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zipcodes": "^8.0.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.12",

@@ -23,7 +23,7 @@ type Props = {
 // ===================================================
 
 export default function ProductQuickView({ open, onClose, product }: Props) {
-  console.log(product)
+  /* console.log(product) */
   return (
     <Modal open={open} onClose={onClose}>
       <Card p="1rem" width="100%" maxWidth="800px" borderRadius={8} position="relative">

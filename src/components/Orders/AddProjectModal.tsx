@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -54,6 +55,14 @@ const ModalTextarea = styled.textarea`
   resize: vertical;
 `;
 
+const ModalSelect = styled.select`
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+`;
+
 const ModalButton = styled.button`
   background-color: #4caf50;
   color: white;
@@ -63,38 +72,62 @@ const ModalButton = styled.button`
   cursor: pointer;
 `;
 
-const AddProjectModal = ({ formData, onClose, onChange, onSubmit }) => {
+const AddProjectModal = ({ formData = {}, onClose, onChange, onSubmit, isLoading }) => {
+  const workTypes = [
+    'Earthmoving',
+    'Dumpster Rental',
+    'Scaffolding',
+    'Demolition',
+    'Water Remediation'
+  ];
+
   return (
     <ModalOverlay onClick={onClose}>
       <Modal onClick={(e) => e.stopPropagation()}>
         <CloseModalButton onClick={onClose}>×</CloseModalButton>
         <ModalTitle>Add New Project</ModalTitle>
+
         <ModalInput
           placeholder="Title"
           name="title"
-          value={formData.title}
+          value={formData.title || ''}
           onChange={onChange}
         />
         <ModalTextarea
           placeholder="Description"
           name="description"
           rows={4}
-          value={formData.description}
+          value={formData.description || ''}
           onChange={onChange}
         />
         <ModalInput
-          placeholder="Index"
-          name="index"
-          value={formData.index}
+          placeholder="Zip Code"
+          name="zip"
+          value={formData.zip || ''}
           onChange={onChange}
         />
         <ModalInput
           placeholder="Price"
           name="price"
-          value={formData.price}
+          value={formData.price || ''}
           onChange={onChange}
         />
-        <ModalButton onClick={onSubmit}>Save Project</ModalButton>
+        <ModalSelect
+          name="category"
+          value={formData.category || ''}
+          onChange={onChange}
+        >
+          <option value="">Select Category</option>
+          {workTypes.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </ModalSelect>
+
+        <ModalButton onClick={onSubmit} disabled={isLoading}>
+          {isLoading ? 'Saving...' : 'Save Project'}
+        </ModalButton>
       </Modal>
     </ModalOverlay>
   );

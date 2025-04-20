@@ -33,7 +33,7 @@ export default async function ProductDetails({ params }: Props) {
     ? [productInfo.images]
     : [];
 
-  console.log("✅ Product loaded:", productInfo);
+  /* console.log("✅ Product loaded:", productInfo); */
 
   return (
     <Container>
