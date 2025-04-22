@@ -1,4 +1,5 @@
 'use client';
+import { workTypes } from '@utils/data_fetch/projectFetch';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -73,13 +74,6 @@ const ModalButton = styled.button`
 `;
 
 const AddProjectModal = ({ formData = {}, onClose, onChange, onSubmit, isLoading }) => {
-  const workTypes = [
-    'Earthmoving',
-    'Dumpster Rental',
-    'Scaffolding',
-    'Demolition',
-    'Water Remediation'
-  ];
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -90,43 +84,43 @@ const AddProjectModal = ({ formData = {}, onClose, onChange, onSubmit, isLoading
         <ModalInput
           placeholder="Title"
           name="title"
-          value={formData.title || ''}
+          value={formData.title || ""}
           onChange={onChange}
         />
         <ModalTextarea
           placeholder="Description"
           name="description"
           rows={4}
-          value={formData.description || ''}
+          value={formData.description || ""}
           onChange={onChange}
         />
         <ModalInput
           placeholder="Zip Code"
           name="zip"
-          value={formData.zip || ''}
+          value={formData.zip || ""}
           onChange={onChange}
         />
         <ModalInput
           placeholder="Price"
           name="price"
-          value={formData.price || ''}
+          value={formData.price || ""}
           onChange={onChange}
         />
         <ModalSelect
           name="category"
-          value={formData.category || ''}
+          value={formData.category || ""}
           onChange={onChange}
         >
           <option value="">Select Category</option>
-          {workTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
+          {workTypes.map(({ title, value }) => (
+            <option key={value} value={value}>
+              {title}
             </option>
           ))}
         </ModalSelect>
 
         <ModalButton onClick={onSubmit} disabled={isLoading}>
-          {isLoading ? 'Saving...' : 'Save Project'}
+          {isLoading ? "Saving..." : "Save Project"}
         </ModalButton>
       </Modal>
     </ModalOverlay>

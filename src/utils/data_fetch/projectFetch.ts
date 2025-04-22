@@ -24,3 +24,12 @@ export const createProject = async (data) => {
   if (!res.ok) throw new Error('Failed to create project');
   return res.json();
 };
+
+
+export const workTypes = [
+  { title: 'Earthmoving', value: 'earthmoving' },
+  { title: 'Dumpster Rental', value: 'dumpster-rental' },
+  { title: 'Scaffolding', value: 'scaffolding' },
+  { title: 'Demolition', value: 'demolition' },
+  { title: 'Water Remediation', value: 'water-remediation' },
+];

@@ -1,5 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
+import { workTypes } from "@utils/data_fetch/projectFetch";
+import React from "react";
+import styled from "styled-components";
 
 const SelectedFiltersWrapper = styled.div`
   display: flex;
@@ -30,12 +31,15 @@ const CloseTag = styled.span`
 const SelectedFilters = ({ selectedTypes, onRemove }) => {
   return (
     <SelectedFiltersWrapper>
-      {selectedTypes.map((type) => (
-        <FilterTag key={type}>
-          {type}
-          <CloseTag onClick={() => onRemove(type)}>×</CloseTag>
-        </FilterTag>
-      ))}
+      {selectedTypes.map((typeValue) => {
+        const typeObj = workTypes.find((t) => t.value === typeValue);
+        return (
+          <FilterTag key={typeValue}>
+            {typeObj ? typeObj.title : typeValue}
+            <CloseTag onClick={() => onRemove(typeValue)}>×</CloseTag>
+          </FilterTag>
+        );
+      })}
     </SelectedFiltersWrapper>
   );
 };

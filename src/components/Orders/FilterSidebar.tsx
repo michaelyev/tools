@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getUserLocation, getZipFromCity } from '@utils/location_fetch/location_fetch';
+import { workTypes } from '@utils/data_fetch/projectFetch';
 
 const Sidebar = styled.div`
   width: 250px;
@@ -75,7 +76,6 @@ const LocationCheckbox = styled.label`
 `;
 
 const FilterSidebar = ({
-  workTypes,
   selectedTypes,
   onChange,
   onAddClick,
@@ -168,16 +168,16 @@ const FilterSidebar = ({
 
       <Label>Types of Work</Label>
       <CheckboxList>
-        {workTypes.map((type) => (
-          <label key={type}>
-            <input
-              type="checkbox"
-              checked={selectedTypes.includes(type)}
-              onChange={() => handleTypeChange(type)}
-            />{" "}
-            {type}
-          </label>
-        ))}
+      {workTypes.map(({ title, value }) => (
+  <label key={value}>
+    <input
+      type="checkbox"
+      checked={selectedTypes.includes(value)}
+      onChange={() => handleTypeChange(value)}
+    />{' '}
+    {title}
+  </label>
+))}
       </CheckboxList>
 
       <Label>Zip Code</Label>
