@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { getUserLocation } from '@utils/location_fetch/location_fetch';
+import { getUserLocation, getZipFromCity } from '@utils/location_fetch/location_fetch';
 
 const Sidebar = styled.div`
   width: 250px;
@@ -84,6 +84,7 @@ const FilterSidebar = ({
   radius,
   onRadiusChange,
   onSearchClick,
+  location, // expects { city: string }
 }) => {
   const [zipInput, setZipInput] = useState(zip);
   const [radiusInput, setRadiusInput] = useState(radius || 50);
@@ -105,25 +106,45 @@ const FilterSidebar = ({
     setRadiusInput(radius);
   }, [radius]);
 
-  // Когда включаем чекбокс — определяем локацию
+  // Определить zip по текущей геолокации
   useEffect(() => {
     if (useLocation) {
       setLocationLoading(true);
       getUserLocation().then((location) => {
         setLocationLoading(false);
-        if (location?.zip && location.zip !== 'Unknown') {
+        if (location?.zip && location.zip !== "Unknown") {
           setZipInput(location.zip);
           onZipChange(location.zip);
         }
       });
     } else {
-      setZipInput('');
-      onZipChange('');
+      setZipInput("");
+      onZipChange("");
     }
   }, [useLocation]);
 
+  // ожидаем объект: { city: 'seattle', state: 'wa' }
+  useEffect(() => {
+    const fetchZipFromCity = async () => {
+      if (location?.city && location?.state && !zipInput) {
+        const resolvedZip = await getZipFromCity({
+          city: location.city,
+          state: location.state.toUpperCase(),
+        });
+        console.log("✅ Resolved ZIP:", resolvedZip);
+        if (resolvedZip) {
+          setZipInput(resolvedZip);
+          onZipChange(resolvedZip);
+        } else {
+          console.warn("⚠️ No ZIP found for:", location);
+        }
+      }
+    };
+    fetchZipFromCity();
+  }, [location]);
+
   const handleTypeChange = (type: string) => {
-    if (type === 'CLEAR_ALL') {
+    if (type === "CLEAR_ALL") {
       workTypes.forEach((t) => onChange(t));
     } else {
       onChange(type);
@@ -131,13 +152,15 @@ const FilterSidebar = ({
   };
 
   const handleClear = () => {
-    setZipInput('');
+    setZipInput("");
     setRadiusInput(50);
-    onZipChange('');
+    onZipChange("");
     onRadiusChange(50);
-    handleTypeChange('CLEAR_ALL');
+    handleTypeChange("CLEAR_ALL");
     setUseLocation(false);
   };
+
+  console.log(zipInput);
 
   return (
     <Sidebar>
@@ -151,7 +174,7 @@ const FilterSidebar = ({
               type="checkbox"
               checked={selectedTypes.includes(type)}
               onChange={() => handleTypeChange(type)}
-            />{' '}
+            />{" "}
             {type}
           </label>
         ))}
@@ -171,7 +194,9 @@ const FilterSidebar = ({
           checked={useLocation}
           onChange={() => setUseLocation((prev) => !prev)}
         />
-        {locationLoading ? '📡 Detecting location...' : '📍 Use my current location'}
+        {locationLoading
+          ? "📡 Detecting location..."
+          : "📍 Use my current location"}
       </LocationCheckbox>
 
       <Label>

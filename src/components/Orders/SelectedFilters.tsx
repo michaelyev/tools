@@ -7,7 +7,6 @@ const SelectedFiltersWrapper = styled.div`
   flex-wrap: wrap;
   overflow-x: auto;
   padding-bottom: 0.5rem;
-
   @media (min-width: 768px) {
     overflow-x: visible;
   }

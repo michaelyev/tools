@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
 import {
   Container,
@@ -12,6 +13,7 @@ import FilterSidebar from './FilterSidebar';
 import SelectedFilters from './SelectedFilters';
 import AddProjectModal from './AddProjectModal';
 import { createProject, fetchAllProjects } from '@utils/data_fetch/projectFetch';
+import { getUserLocation } from '@utils/location_fetch/location_fetch';
 
 const workTypes = [
   'Earthmoving',
@@ -21,7 +23,7 @@ const workTypes = [
   'Water Remediation',
 ];
 
-const ProjectsClient = ({ user }) => {
+const ProjectsClient = ({ params, user, location: routeLocation }) => {
   const [projects, setProjects] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [zip, setZip] = useState('');
@@ -30,6 +32,9 @@ const ProjectsClient = ({ user }) => {
   const [hasMore, setHasMore] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [locationLabel, setLocationLabel] = useState('');
+  const [finalLocation, setFinalLocation] = useState<{ city: string; state: string } | null>(null);
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -59,6 +64,24 @@ const ProjectsClient = ({ user }) => {
       console.error('Error loading projects:', err);
     }
   };
+
+  useEffect(() => {
+    const determineLocation = async () => {
+      if (routeLocation && Array.isArray(routeLocation) && routeLocation.length === 2) {
+        setFinalLocation({ state: routeLocation[0], city: routeLocation[1] });
+        setLocationLabel(routeLocation[1]);
+      } else {
+        const loc = await getUserLocation();
+        if (loc?.city && loc?.zip !== 'Unknown') {
+          setFinalLocation({ city: loc.city, state: '' }); // штат из геолокации не извлечён — можно оставить пустым
+          setLocationLabel(loc.city);
+          setZip(loc.zip);
+        }
+      }
+    };
+
+    determineLocation();
+  }, []);
 
   useEffect(() => {
     setPage(1);
@@ -125,45 +148,61 @@ const ProjectsClient = ({ user }) => {
     loadProjects(1, false, newZip, newRadius);
   };
 
+  console.log(selectedTypes)
   return (
-    <Container>
-      <FilterSidebar
-        workTypes={workTypes}
-        selectedTypes={selectedTypes}
-        onChange={handleTypeChange}
-        onAddClick={() => user && setShowAddModal(true)}
-        zip={zip}
-        onZipChange={setZip}
-        radius={radius}
-        onRadiusChange={setRadius}
-        onSearchClick={handleSearch}
-      />
+    <>
+      <h2 style={{ marginBottom: "1rem" }}>
+        {locationLabel ? `Projects near ${locationLabel}` : "Latest Projects"}
+      </h2>
 
-      <ProjectArea>
-        <SelectedFilters selectedTypes={selectedTypes} onRemove={removeFilter} />
-
-        {projects.map((project, i) => (
-          <ProjectCard key={i} project={project} />
-        ))}
-
-        <ButtonRow>
-          {hasMore && (
-            <LoadMoreButton onClick={handleLoadMore}>Load More</LoadMoreButton>
-          )}
-          <ViewAllButton href="/projects">View All Projects</ViewAllButton>
-        </ButtonRow>
-      </ProjectArea>
-
-      {showAddModal && (
-        <AddProjectModal
-          formData={formData}
-          onClose={() => !isLoading && setShowAddModal(false)}
-          onChange={handleInputChange}
-          onSubmit={handleFormSubmit}
-          isLoading={isLoading}
+      <Container>
+        <FilterSidebar
+          location={finalLocation ?? undefined}
+          workTypes={workTypes}
+          selectedTypes={selectedTypes}
+          onChange={handleTypeChange}
+          onAddClick={() => user && setShowAddModal(true)}
+          zip={zip}
+          onZipChange={setZip}
+          radius={radius}
+          onRadiusChange={setRadius}
+          onSearchClick={handleSearch}
         />
-      )}
-    </Container>
+
+        <ProjectArea>
+          {selectedTypes && (
+            <SelectedFilters
+              location={finalLocation?.city ?? ""}
+              selectedTypes={selectedTypes}
+              onRemove={removeFilter}
+            />
+          )}
+
+          {projects.map((project, i) => (
+            <ProjectCard key={i} project={project} />
+          ))}
+
+          <ButtonRow>
+            {hasMore && (
+              <LoadMoreButton onClick={handleLoadMore}>
+                Load More
+              </LoadMoreButton>
+            )}
+            <ViewAllButton href="/projects">View All Projects</ViewAllButton>
+          </ButtonRow>
+        </ProjectArea>
+
+        {showAddModal && (
+          <AddProjectModal
+            formData={formData}
+            onClose={() => !isLoading && setShowAddModal(false)}
+            onChange={handleInputChange}
+            onSubmit={handleFormSubmit}
+            isLoading={isLoading}
+          />
+        )}
+      </Container>
+    </>
   );
 };
 
