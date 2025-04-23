@@ -1,40 +1,46 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Container,
   ProjectArea,
   ButtonRow,
   LoadMoreButton,
   ViewAllButton,
-} from './styles';
-import ProjectCard from './ProjectCard';
-import FilterSidebar from './FilterSidebar';
-import SelectedFilters from './SelectedFilters';
-import AddProjectModal from './AddProjectModal';
-import { createProject, fetchAllProjects } from '@utils/data_fetch/projectFetch';
-import { getUserLocation } from '@utils/location_fetch/location_fetch';
-
+} from "./styles";
+import ProjectCard from "./ProjectCard";
+import FilterSidebar from "./FilterSidebar";
+import SelectedFilters from "./SelectedFilters";
+import AddProjectModal from "./AddProjectModal";
+import {
+  createProject,
+  fetchAllProjects,
+} from "@utils/data_fetch/projectFetch";
+import { getUserLocation } from "@utils/location_fetch/location_fetch";
 
 const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
     initialCategory ? [initialCategory] : []
-  );const [projects, setProjects] = useState([]);
+  );
+  const [projects, setProjects] = useState([]);
   const [zip, setZip] = useState("");
   const [radius, setRadius] = useState(50);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [locationLabel, setLocationLabel] = useState('');
-  const [finalLocation, setFinalLocation] = useState<{ city: string; state: string } | null>(null);
+  const [locationLabel, setLocationLabel] = useState("");
+  const [finalLocation, setFinalLocation] = useState<{
+    city: string;
+    state: string;
+  } | null>(null);
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    zip: '',
-    price: '',
-    category: '',
+    title: "",
+    description: "",
+    zip: "",
+    price: "",
+    category: "",
   });
 
   const loadProjects = async (
@@ -55,19 +61,23 @@ const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
       if (data.length < 4) setHasMore(false);
       setProjects((prev) => (append ? [...prev, ...data] : data));
     } catch (err) {
-      console.error('Error loading projects:', err);
+      console.error("Error loading projects:", err);
     }
   };
 
   useEffect(() => {
     const determineLocation = async () => {
-      if (routeLocation && Array.isArray(routeLocation) && routeLocation.length === 2) {
+      if (
+        routeLocation &&
+        Array.isArray(routeLocation) &&
+        routeLocation.length === 2
+      ) {
         setFinalLocation({ state: routeLocation[0], city: routeLocation[1] });
         setLocationLabel(routeLocation[1]);
       } else {
         const loc = await getUserLocation();
-        if (loc?.city && loc?.zip !== 'Unknown') {
-          setFinalLocation({ city: loc.city, state: '' }); // штат из геолокации не извлечён — можно оставить пустым
+        if (loc?.city && loc?.zip !== "Unknown") {
+          setFinalLocation({ city: loc.city, state: "" }); // штат из геолокации не извлечён — можно оставить пустым
           setLocationLabel(loc.city);
           setZip(loc.zip);
         }
@@ -84,17 +94,24 @@ const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
   }, []);
 
   const handleTypeChange = (type: string) => {
-    setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
+    if (type === "CLEAR") {
+      setSelectedTypes([]);
+    } else {
+      setSelectedTypes((prev) =>
+        prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+      );
+    }
   };
+  
 
   const removeFilter = (type: string) => {
     setSelectedTypes((prev) => prev.filter((t) => t !== type));
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -106,7 +123,7 @@ const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
 
     const newProject = {
       ...formData,
-      userName: user.name?.toLowerCase() || 'unknown',
+      userName: user.name?.toLowerCase() || "unknown",
       userId: user.id,
     };
 
@@ -114,17 +131,17 @@ const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
       const saved = await createProject(newProject);
       setProjects((prev) => [saved, ...prev]);
     } catch (err) {
-      console.error('Failed to save project:', err);
+      console.error("Failed to save project:", err);
     }
 
     setIsLoading(false);
     setShowAddModal(false);
     setFormData({
-      title: '',
-      description: '',
-      zip: '',
-      price: '',
-      category: '',
+      title: "",
+      description: "",
+      zip: "",
+      price: "",
+      category: "",
     });
   };
 
@@ -142,7 +159,7 @@ const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
     loadProjects(1, false, newZip, newRadius);
   };
 
-  console.log(selectedTypes)
+  console.log(selectedTypes);
   return (
     <>
       <h2 style={{ marginBottom: "1rem" }}>
@@ -163,7 +180,7 @@ const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
         />
 
         <ProjectArea>
-          {selectedTypes && (
+          {selectedTypes.length > 0 && (
             <SelectedFilters
               location={finalLocation?.city ?? ""}
               selectedTypes={selectedTypes}

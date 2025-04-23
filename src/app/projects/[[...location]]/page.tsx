@@ -1,32 +1,39 @@
 import React from "react";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
-import { fetchAllProjects } from "@utils/data_fetch/projectFetch";
 import { getServerSession } from "next-auth";
 import ProjectsClient from "@component/Orders/Projects";
 import MarkdownRenderer from "@component/markdown/MarkdonwnRenderer";
 import { fetchProjectPage } from "@utils/data_fetch/fetchProjectPage";
-import Container from "@component/Container";
+import ServerContainer from "@component/ServerContainer/ServerContainer";
 
-const page = async ({ params }: { params: { location: string[] } }) => {
+const Page = async ({ params }: { params: { location?: string[] } }) => {
   const session = await getServerSession(authOptions);
   const user = session?.user || null;
 
-  const [state, city, category] = params.location;
-  const pageData = await fetchProjectPage(state, city, category);
+  const [state, city, category] = params.location || [];
+
+  let pageData = null;
+
+  if (state && city) {
+    pageData = await fetchProjectPage(state, city, category);
+  }
 
   return (
     <main>
       <ProjectsClient 
-        location={[state, city]} 
-        initialCategory={category} 
+        location={state && city ? [state, city] : undefined} 
+        initialCategory={category || undefined} 
         user={user} 
       />
-      <Container>
-      <MarkdownRenderer content={pageData.markdown}/>
 
-      </Container>
+      {pageData && (
+        <ServerContainer>
+          <MarkdownRenderer content={pageData.markdown} />
+        </ServerContainer>
+      )}
     </main>
   );
 };
 
-export default page;
+
+export default Page;
