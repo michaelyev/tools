@@ -3,7 +3,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 
 import Card from "@component/Card";
@@ -15,6 +15,7 @@ import TextField from "@component/text-field";
 import Typography from "@component/Typography";
 import { getUserLocation } from "@utils/location_fetch/location_fetch";
 
+// ✅ Validation schema
 const validationSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
   category: yup.string().required("Category is required"),
@@ -50,7 +51,6 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
       title: "",
       price: 0,
       tags: "",
-      stock: "",
       sale_price: "",
       description: "",
       category: "",
@@ -64,15 +64,12 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
 
   const [location, setLocation] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
-  const [widgetReady, setWidgetReady] = useState(false);
 
   const rentSelected = watch("rent");
-  const titleSlug = watch("title")?.trim().toLowerCase().replace(/\s+/g, "-");
+  const titleSlug = watch("title")?.trim().toLowerCase().replace(/\s+/g, "-") || "temp";
 
   useEffect(() => {
-    getUserLocation().then((loc) => {
-      setLocation(loc);
-    });
+    getUserLocation().then(setLocation);
   }, []);
 
   const removeImage = (index) => {
@@ -91,7 +88,7 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
         }
       : {};
 
-    const shop = loggedInUser?.shop || {/* fallback shop data */};
+    const shop = loggedInUser?.shop || {};
 
     const productData = {
       ...data,
@@ -100,7 +97,6 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
       slug: titleSlug,
       price: Number(data.price),
       sale_price: Number(data.sale_price),
-      stock: Number(data.stock),
       category: data.category.trim(),
       location: {
         type: "Point",
@@ -160,7 +156,6 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
                 maxFiles: 10,
                 sources: ["local"],
               }}
-              onUploadAdded={() => setWidgetReady(true)}
               onSuccess={(result) => {
                 const secureUrl = (result.info as CloudinaryUploadWidgetInfo).secure_url;
                 if (secureUrl) {
@@ -187,12 +182,7 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
             <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "20px" }}>
               {imageUrls.map((url, idx) => (
                 <div key={idx} style={{ position: "relative" }}>
-                  <img
-                    src={url}
-                    width={120}
-                    style={{ borderRadius: 8 }}
-                    alt={`uploaded-${idx}`}
-                  />
+                  <img src={url} width={120} style={{ borderRadius: 8 }} alt={`uploaded-${idx}`} />
                   <Button
                     style={{ position: "absolute", top: 0, right: 0 }}
                     size="sm"
@@ -211,19 +201,11 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField fullwidth label="Stock" {...register("stock")} errorText={errors.stock?.message} />
-          </Grid>
-
-          <Grid item sm={6} xs={12}>
             <TextField fullwidth label="Tags" {...register("tags")} errorText={errors.tags?.message} />
           </Grid>
 
           <Grid item sm={6} xs={12}>
             <TextField fullwidth label="Price" {...register("price")} errorText={errors.price?.message} />
-          </Grid>
-
-          <Grid item sm={6} xs={12}>
-            <TextField fullwidth label="Sale Price" {...register("sale_price")} errorText={errors.sale_price?.message} />
           </Grid>
 
           <Grid item xs={12}>
