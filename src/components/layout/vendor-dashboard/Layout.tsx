@@ -16,7 +16,9 @@ const linkList = [
   { href: "/vendor/products", title: "Products", iconName: "box", count: 300 },
   { href: "/vendor/products/create", title: "Add New Product", iconName: "upload" },
   { href: "/vendor/orders", title: "Orders", iconName: "shopping-cart", count: 40 },
-  { href: "/vendor/account-settings", title: "Account Settings", iconName: "gear-2" }
+  { href: "/vendor/account-settings", title: "Account Settings", iconName: "gear-2" },
+  { href: "/vendor/address", title: "Addresses", iconName: "pin", count: 16 },
+
 ];
 
 export default function VendorDashboardLayout({ children }: PropsWithChildren) {

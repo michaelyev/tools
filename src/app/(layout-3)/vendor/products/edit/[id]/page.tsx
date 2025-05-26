@@ -1,13 +1,10 @@
-
-
 import { Fragment } from "react";
 import Link from "next/link";
-// GLOBAL CUSTOM COMPONENTS
 import { Button } from "@component/buttons";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
-// PAGE SECTION COMPONENTS
-import { ProductForm } from "@sections/vendor-dashboard/products";
 import { getUserSession } from "@utils/data_fetch/loggedInUserData";
+import { getProductById } from "@utils/data_fetch/getProductById";
+import ProductEditForm from "@sections/vendor-dashboard/products/ProductsEditForm";
 
 const categoryOptions = [
   { label: "Earth Moving", value: "earth-moving" },
@@ -30,9 +27,11 @@ const categoryOptions = [
   { label: "Work Light", value: "work-light" },
 ];
 
-
-export default async function AddProduct() {
+export default async function EditProductPage({ params }: { params: { id: string } }) {
   const user = await getUserSession();
+  const product = await getProductById(params.id);
+
+
   const HEADER_LINK = (
     <Link href="/vendor/products">
       <Button color="primary" bg="primary.light" px="2rem">
@@ -40,13 +39,18 @@ export default async function AddProduct() {
       </Button>
     </Link>
   );
-
-  console.log(user)
-
   return (
     <Fragment>
-      <DashboardPageHeader title="Add Product" iconName="delivery-box" button={HEADER_LINK} />
-      <ProductForm categoryOptions={categoryOptions} loggedInUser={user} />
+      <DashboardPageHeader title="Edit Product" iconName="delivery-box" button={HEADER_LINK} />
+      {product ? (
+        <ProductEditForm
+          loggedInUser={user} 
+          categoryOptions={categoryOptions} 
+          productData={product} 
+        />
+      ) : (
+        <p>Product not found</p>
+      )}
     </Fragment>
   );
 }

@@ -3,7 +3,10 @@ import { Fragment } from "react";
 import { Card1 } from "@component/Card1";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
-import { BackToAddress, AddressForm } from "@sections/customer-dashboard/address";
+import {
+  BackToAddress,
+  AddressForm,
+} from "@sections/customer-dashboard/address";
 
 export default function CreateAddress() {
   return (

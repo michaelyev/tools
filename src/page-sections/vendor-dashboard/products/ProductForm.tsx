@@ -13,9 +13,8 @@ import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
 import Typography from "@component/Typography";
-import { getUserLocation } from "@utils/location_fetch/location_fetch";
+import { getUserLocation, getCoordsFromZip } from "@utils/location_fetch/location_fetch";
 
-// ✅ Validation schema
 const validationSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
   category: yup.string().required("Category is required"),
@@ -35,6 +34,10 @@ const validationSchema = yup.object().shape({
     is: true,
     then: (schema) => schema.required("Monthly price is required"),
   }),
+  zip: yup.string().when("useAutoLocation", {
+    is: false,
+    then: yup.string().required("ZIP Code is required"),
+  }),
 });
 
 export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
@@ -50,27 +53,48 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
     defaultValues: {
       title: "",
       price: 0,
-      tags: "",
-      sale_price: "",
       description: "",
       category: "",
       rent: false,
       daily_price: 0,
       weekly_price: 0,
       monthly_price: 0,
+      useAutoLocation: true,
+      zip: "",
     },
     resolver: yupResolver(validationSchema),
   });
 
   const [location, setLocation] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
+  const [widgetReady, setWidgetReady] = useState(false);
 
   const rentSelected = watch("rent");
-  const titleSlug = watch("title")?.trim().toLowerCase().replace(/\s+/g, "-") || "temp";
+  const titleSlug = watch("title")?.trim().toLowerCase().replace(/\s+/g, "-");
+  const useAutoLocation = watch("useAutoLocation");
 
   useEffect(() => {
-    getUserLocation().then(setLocation);
-  }, []);
+    if (useAutoLocation) {
+      getUserLocation().then((loc) => {
+        if (loc) {
+          setLocation({ latitude: loc.latitude, longitude: loc.longitude });
+          setValue("zip", loc.zip); // display only
+        } else {
+          alert("Could not detect your location. Please enter ZIP manually.");
+          setValue("useAutoLocation", false);
+        }
+      });
+    }
+  }, [useAutoLocation]);
+
+  const handleZipInput = async (zip) => {
+    const coords = await getCoordsFromZip(zip);
+    if (!coords) {
+      alert("Invalid ZIP Code. Try again.");
+      return;
+    }
+    setLocation({ latitude: coords.lat, longitude: coords.lng });
+  };
 
   const removeImage = (index) => {
     setImageUrls((prev) => prev.filter((_, i) => i !== index));
@@ -97,6 +121,7 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
       slug: titleSlug,
       price: Number(data.price),
       sale_price: Number(data.sale_price),
+      stock: Number(data.stock),
       category: data.category.trim(),
       location: {
         type: "Point",
@@ -123,6 +148,8 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
     }
   };
 
+  
+
   return (
     <Card p="30px" borderRadius={8}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -148,6 +175,38 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
           </Grid>
 
           <Grid item xs={12}>
+            <label>
+              <input
+                type="checkbox"
+                {...register("useAutoLocation")}
+                checked={useAutoLocation}
+                onChange={() => setValue("useAutoLocation", !useAutoLocation)}
+              />{" "}
+              🛰 Use Automatic Location
+            </label>
+          </Grid>
+
+          {!useAutoLocation && (
+            <Grid item xs={12}>
+              <TextField
+                fullwidth
+                label="📮 ZIP Code"
+                {...register("zip")}
+                onBlur={(e) => handleZipInput(e.target.value)}
+                errorText={errors.zip?.message}
+              />
+            </Grid>
+          )}
+
+          {location?.latitude && (
+            <Grid item xs={12}>
+              <Typography fontSize="0.875rem" mb="6px">
+                📍 Coordinates: {location.latitude.toFixed(5)}, {location.longitude.toFixed(5)}
+              </Typography>
+            </Grid>
+          )}
+
+          <Grid item xs={12}>
             <CldUploadWidget
               signatureEndpoint="/api/cloudinary-signature"
               options={{
@@ -156,6 +215,7 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
                 maxFiles: 10,
                 sources: ["local"],
               }}
+              onUploadAdded={() => setWidgetReady(true)}
               onSuccess={(result) => {
                 const secureUrl = (result.info as CloudinaryUploadWidgetInfo).secure_url;
                 if (secureUrl) {
@@ -201,10 +261,6 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
           </Grid>
 
           <Grid item sm={6} xs={12}>
-            <TextField fullwidth label="Tags" {...register("tags")} errorText={errors.tags?.message} />
-          </Grid>
-
-          <Grid item sm={6} xs={12}>
             <TextField fullwidth label="Price" {...register("price")} errorText={errors.price?.message} />
           </Grid>
 
@@ -239,14 +295,6 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
             </Grid>
           </Grid>
         )}
-
-        <Grid item xs={12}>
-          {location?.city && (
-            <Typography fontSize="0.875rem" mb="6px">
-              Location: {location.city} ({location.zip})
-            </Typography>
-          )}
-        </Grid>
 
         <Button mt="25px" variant="contained" color="primary" type="submit">
           Save product

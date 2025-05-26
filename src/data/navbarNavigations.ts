@@ -38,46 +38,6 @@ const navbarNavigations = [
     ],
   },
   {
-    title: "User Account",
-    child: [
-      {
-        title: "Orders",
-        child: [
-          { title: "Order List", url: "/orders" },
-          {
-            title: "Order Details",
-            url: "/orders/f0ba538b-c8f3-45ce-b6c1-209cf07ba5f8",
-          },
-        ],
-      },
-      {
-        title: "Profile",
-        child: [
-          { title: "View Profile", url: "/profile" },
-          { title: "Edit Profile", url: "/profile/edit" },
-        ],
-      },
-      {
-        title: "Address",
-        child: [
-          { title: "Address List", url: "/address" },
-          { title: "Add Address", url: "/address/create" },
-        ],
-      },
-      {
-        title: "Support tickets",
-        child: [
-          { title: "All tickets", url: "/support-tickets" },
-          {
-            title: "Ticket details",
-            url: "/support-tickets/product-broken.-i-need-refund",
-          },
-        ],
-      },
-      { title: "Wishlist", url: "/wish-list" },
-    ],
-  },
-  {
     title: "Vendor Account",
     child: [
       { title: "Dashboard", url: "/vendor/dashboard" },

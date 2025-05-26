@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -38,34 +37,32 @@ export default function ProductsList({ meta, products }: Props) {
   return (
     <>
       {products.map((item) => (
-        <Link href={`/vendor/products/${item.slug}`} key={item.id}>
-          <TableRow my="1rem" padding="6px 18px">
-            <FlexBox alignItems="center" m="6px" flex="2 2 220px !important">
-              <Avatar src={item.thumbnail} size={36} />
-              <Typography textAlign="left" ml="20px">
-                {item.title}
-              </Typography>
-            </FlexBox>
+        <TableRow key={item.id} my="1rem" padding="6px 18px">
+          <FlexBox alignItems="center" m="6px" flex="2 2 220px !important">
+            <Avatar src={item.thumbnail} size={36} />
+            <Typography textAlign="left" ml="20px">
+              {item.title}
+            </Typography>
+          </FlexBox>
 
-            <H5 m="6px" textAlign="left" fontWeight="400">
-              {currency(item.price)}
-            </H5>
+          <H5 m="6px" textAlign="left" fontWeight="400">
+            {currency(item.price)}
+          </H5>
 
-            <H5 m="6px" textAlign="left" fontWeight="400">
-              {calculateDiscount(item.price, item.discount)}
-            </H5>
+          <H5 m="6px" textAlign="left" fontWeight="400">
+            {calculateDiscount(item.price, item.discount)}
+          </H5>
 
-            <Hidden flex="0 0 0 !important" down={769}>
-              <Typography textAlign="center" color="text.muted">
-                <IconButton>
-                  <Icon variant="small" defaultcolor="currentColor">
-                    arrow-right
-                  </Icon>
-                </IconButton>
-              </Typography>
-            </Hidden>
-          </TableRow>
-        </Link>
+          <Hidden flex="0 0 0 !important" down={769}>
+            <Typography textAlign="center" color="text.muted">
+              <IconButton onClick={() => push(`/vendor/products/edit/${item._id}`)}>
+                <Icon variant="small" defaultcolor="currentColor">
+                  arrow-right
+                </Icon>
+              </IconButton>
+            </Typography>
+          </Hidden>
+        </TableRow>
       ))}
 
       <FlexBox justifyContent="center" mt="2.5rem">

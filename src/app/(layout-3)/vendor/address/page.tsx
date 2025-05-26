@@ -7,7 +7,7 @@ import DashboardPageHeader from "@component/layout/DashboardPageHeader";
 import {
   AddressItem,
   AddNewAddress,
-  AddressPagination
+  AddressPagination,
 } from "@sections/customer-dashboard/address";
 
 export default async function AddressList() {
@@ -15,7 +15,11 @@ export default async function AddressList() {
 
   return (
     <Fragment>
-      <DashboardPageHeader title="My Addresses" iconName="pin_filled" button={<AddNewAddress />} />
+      <DashboardPageHeader
+        title="My Addresses"
+        iconName="pin_filled"
+        button={<AddNewAddress />}
+      />
 
       {addressList.map((item) => (
         <AddressItem item={item} />

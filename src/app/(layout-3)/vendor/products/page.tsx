@@ -28,7 +28,7 @@ export default async function Products({ searchParams }: Params) {
   });
 
 
-  console.log("User email:", email);
+  console.log("User email:", productsData.products);
 
   return (
     <Fragment>

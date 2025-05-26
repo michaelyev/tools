@@ -5,7 +5,10 @@ import api from "@utils/__api__/address";
 import { Card1 } from "@component/Card1";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
-import { BackToAddress, AddressForm } from "@sections/customer-dashboard/address";
+import {
+  BackToAddress,
+  AddressForm,
+} from "@sections/customer-dashboard/address";
 // CUSTOM DATA MODEL
 import { IDParams } from "interfaces";
 
@@ -15,7 +18,11 @@ const AddressDetails = async ({ params }: IDParams) => {
 
   return (
     <Fragment>
-      <DashboardPageHeader iconName="pin_filled" title="Edit Address" button={<BackToAddress />} />
+      <DashboardPageHeader
+        iconName="pin_filled"
+        title="Edit Address"
+        button={<BackToAddress />}
+      />
 
       <Card1 borderRadius={8}>
         <AddressForm address={address} />
