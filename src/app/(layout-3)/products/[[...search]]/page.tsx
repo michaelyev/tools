@@ -10,7 +10,7 @@ export default async function ProductSearchResult({
   searchParams,
 }: {
   params: {
-    search?: string[]; // массив из [category, subcategory, subSubcategory]
+    search?: string[]; // array of [category, subcategory, subSubcategory]
   };
   searchParams?: {
     query?: string;
@@ -18,7 +18,10 @@ export default async function ProductSearchResult({
     email?: string;
     lat?: string;
     lng?: string;
-    distance?: string;
+    radius?: string;
+    timeRange?: string;
+    startDate?: string;
+    endDate?: string;
   };
 }) {
   const currentPage = Number(searchParams?.page) || 1;
@@ -27,11 +30,18 @@ export default async function ProductSearchResult({
   const subCategory = params?.search?.[1] || undefined;
   const subSubCategory = params?.search?.[2] || undefined;
 
-
-  console.log(params?.search)
-
   const products = await getProducts({
-    page: currentPage, category: category, subCategory: subCategory, subSubcategory: subSubCategory
+    page: currentPage,
+    category,
+    subCategory,
+    subSubcategory: subSubCategory,
+    q: query,
+    lat: searchParams?.lat ? parseFloat(searchParams.lat) : undefined,
+    lng: searchParams?.lng ? parseFloat(searchParams.lng) : undefined,
+    radius: searchParams?.radius ? parseFloat(searchParams.radius) : undefined,
+    timeRange: searchParams?.timeRange,
+    startDate: searchParams?.startDate,
+    endDate: searchParams?.endDate,
   });
 
   return (

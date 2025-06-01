@@ -12,29 +12,142 @@ import TextField from "@component/text-field";
 import { Accordion, AccordionHeader } from "@component/accordion";
 import { H5, H6, Paragraph, SemiSpan } from "@component/Typography";
 import { Button } from "@component/buttons";
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { getUserLocation } from "@utils/location_fetch/location_fetch";
+import styled from "styled-components";
+
+const LocationCheckbox = styled.label`
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-size: 14px;
+  color: #555;
+  gap: 0.5rem;
+`;
+
+const RadiusInputWrapper = styled.div`
+  margin-top: 0.5rem;
+`;
+
+const RadiusValue = styled.div`
+  text-align: right;
+  font-size: 14px;
+  color: #555;
+`;
+
+const RadiusInput = styled.input`
+  width: 100%;
+`;
+
+const TimeFilterWrapper = styled.div`
+  margin-top: 1rem;
+`;
+
+const TimeFilterSelect = styled.select`
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+`;
+
+const DateRangeWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+`;
+
+const DateInput = styled.input`
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+`;
 
 export default function ProductFilterCard() {
-  const pathname = usePathname()
-  const pageCategory = pathname.split('/')[2]
-  console.log(pageCategory)
-
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pageCategory = pathname.split('/')[2];
 
   const [isMobile, setIsMobile] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([pageCategory]);
   const [showAllCategories, setShowAllCategories] = useState(false);
+  
+  // Distance filter states
+  const [zipInput, setZipInput] = useState(searchParams.get('zip') || '');
+  const [radiusInput, setRadiusInput] = useState(Number(searchParams.get('radius')) || 50);
+  const [useLocation, setUseLocation] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
 
-  console.log(expandedCategories)
+  // Time filter states
+  const [timeRange, setTimeRange] = useState(searchParams.get('timeRange') || '');
+  const [startDate, setStartDate] = useState(searchParams.get('startDate') || '');
+  const [endDate, setEndDate] = useState(searchParams.get('endDate') || '');
+
+  // Get initial location on component mount
+  useEffect(() => {
+    const getInitialLocation = async () => {
+      const location = await getUserLocation();
+      if (location?.zip && location.zip !== "Unknown") {
+        setZipInput(location.zip);
+        setCoordinates({ lat: location.latitude, lng: location.longitude });
+        updateFilters({ 
+          zip: location.zip,
+          lat: location.latitude,
+          lng: location.longitude
+        });
+      }
+    };
+    getInitialLocation();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    handleResize(); // Check on initial render
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    if (useLocation) {
+      setLocationLoading(true);
+      getUserLocation().then((location) => {
+        setLocationLoading(false);
+        if (location?.zip && location.zip !== "Unknown") {
+          setZipInput(location.zip);
+          setCoordinates({ lat: location.latitude, lng: location.longitude });
+          updateFilters({ 
+            zip: location.zip,
+            lat: location.latitude,
+            lng: location.longitude
+          });
+        }
+      });
+    } else {
+      setZipInput('');
+      setCoordinates(null);
+      updateFilters({ zip: '', lat: undefined, lng: undefined });
+    }
+  }, [useLocation]);
+
+  const updateFilters = (newParams: Record<string, string | number | undefined>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== '') {
+        params.set(key, String(value));
+      } else {
+        params.delete(key);
+      }
+    });
+
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const handleAccordionToggle = (category: string) => {
     setExpandedCategories((prev) =>
@@ -42,6 +155,41 @@ export default function ProductFilterCard() {
         ? prev.filter((item) => item !== category)
         : [...prev, category]
     );
+  };
+
+  const handleTimeRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setTimeRange(value);
+    
+    if (value === 'custom') {
+      // Don't update URL yet, wait for date selection
+      return;
+    }
+    
+    updateFilters({ timeRange: value });
+  };
+
+  const handleDateChange = () => {
+    if (startDate && endDate) {
+      updateFilters({
+        timeRange: 'custom',
+        startDate,
+        endDate
+      });
+    }
+  };
+
+  const handleClearFilters = () => {
+    setZipInput('');
+    setRadiusInput(50);
+    setUseLocation(false);
+    setTimeRange('');
+    setStartDate('');
+    setEndDate('');
+    
+    // Clear all filter params from URL
+    const params = new URLSearchParams();
+    router.push(pathname);
   };
 
   const renderFilters = () => (
@@ -120,7 +268,81 @@ export default function ProductFilterCard() {
         </Button>
       )}
       <Divider mt="18px" mb="24px" />
-      {/* PRICE RANGE FILTER */}
+      <H6 mb="16px">Distance</H6>
+      <TextField
+        placeholder="Enter ZIP code"
+        value={zipInput}
+        onChange={(e) => {
+          setZipInput(e.target.value);
+          updateFilters({ zip: e.target.value });
+        }}
+        disabled={useLocation}
+        fullwidth
+      />
+      <LocationCheckbox>
+        <input
+          type="checkbox"
+          checked={useLocation}
+          onChange={() => setUseLocation((prev) => !prev)}
+        />
+        {locationLoading ? "📡 Detecting location..." : "📍 Use my current location"}
+      </LocationCheckbox>
+
+      <H6 mt="16px">Radius: <strong>{radiusInput} mi</strong></H6>
+      <RadiusInputWrapper>
+        <RadiusInput
+          type="range"
+          min="1"
+          max="100"
+          value={radiusInput}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            setRadiusInput(value);
+            updateFilters({ radius: value });
+          }}
+        />
+        <RadiusValue>{radiusInput} miles</RadiusValue>
+      </RadiusInputWrapper>
+
+      <Divider my="24px" />
+      <H6 mb="16px">Time Range</H6>
+      <TimeFilterWrapper>
+        <TimeFilterSelect
+          value={timeRange}
+          onChange={handleTimeRangeChange}
+        >
+          <option value="">All Time</option>
+          <option value="today">Today</option>
+          <option value="yesterday">Yesterday</option>
+          <option value="this_week">This Week</option>
+          <option value="this_month">This Month</option>
+          <option value="last_month">Last Month</option>
+          <option value="custom">Custom Range</option>
+        </TimeFilterSelect>
+
+        {timeRange === 'custom' && (
+          <DateRangeWrapper>
+            <DateInput
+              type="date"
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+                handleDateChange();
+              }}
+            />
+            <DateInput
+              type="date"
+              value={endDate}
+              onChange={(e) => {
+                setEndDate(e.target.value);
+                handleDateChange();
+              }}
+            />
+          </DateRangeWrapper>
+        )}
+      </TimeFilterWrapper>
+
+      <Divider my="24px" />
       <H6 mb="16px">Price Range</H6>
       <FlexBox justifyContent="space-between" alignItems="center">
         <TextField placeholder="0" type="number" fullwidth />
@@ -130,7 +352,6 @@ export default function ProductFilterCard() {
         <TextField placeholder="250" type="number" fullwidth />
       </FlexBox>
       <Divider my="24px" />
-      {/* BRANDS FILTER */}
       <H6 mb="16px">Brands</H6>
       {brandList.map((item) => (
         <CheckBox
@@ -144,7 +365,6 @@ export default function ProductFilterCard() {
         />
       ))}
       <Divider my="24px" />
-      {/* STOCK AND SALES FILTERS */}
       {otherOptions.map((item) => (
         <CheckBox
           my="10px"
@@ -157,7 +377,6 @@ export default function ProductFilterCard() {
         />
       ))}
       <Divider my="24px" />
-      {/* RATING FILTER */}
       <H6 mb="16px">Ratings</H6>
       {[5, 4, 3, 2, 1].map((item) => (
         <CheckBox
@@ -170,7 +389,6 @@ export default function ProductFilterCard() {
         />
       ))}
       <Divider my="24px" />
-      {/* COLORS FILTER */}
       <H6 mb="16px">Colors</H6>
       <FlexBox mb="1rem">
         {colorList.map((item, ind) => (
@@ -183,6 +401,14 @@ export default function ProductFilterCard() {
           />
         ))}
       </FlexBox>
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={handleClearFilters}
+        style={{ marginTop: "1rem" }}
+      >
+        Clear All Filters
+      </Button>
     </Card>
   );
 
@@ -197,8 +423,6 @@ export default function ProductFilterCard() {
     renderFilters()
   );
 }
-
-
 
 const categoryList = [
   {

@@ -8,15 +8,17 @@ export async function getProducts({
   slug = "",
   lat,
   lng,
-  distance,
+  radius,
   category = "",
   subCategory = "",
   subSubcategory = "",
-  q = "", // Add `q` parameter for text search
+  q = "",
+  timeRange = "",
+  startDate = "",
+  endDate = "",
 }) {
   try {
     // Construct the URL path dynamically
-    console.log(subCategory[0])
     const path = [
       "http://localhost:4100/products",
       category,
@@ -39,8 +41,11 @@ export async function getProducts({
         slug,
         lat,
         lng,
-        distance,
-        q, // Include `q` for text search
+        radius,
+        q,
+        timeRange,
+        startDate,
+        endDate,
       },
     });
 
