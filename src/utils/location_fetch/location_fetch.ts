@@ -109,6 +109,27 @@ export const getZipFromCity = async ({
   }
 };
 
+export const getCoordsFromLocation = async ({ city, state, country = 'USA' }: { city: string; state: string; country?: string; }): Promise<{ lat: number; lng: number } | null> => {
+  const apiKey = '3f0b27040d8d44c7bbcb88e1b5a7d6d5';
+  const geoQuery = `${city}, ${state}, ${country}`;
+  const geoUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(geoQuery)}&key=${apiKey}&pretty=1&limit=1`;
+
+  try {
+    const geoRes = await fetch(geoUrl);
+    const geoData = await geoRes.json();
+    const geometry = geoData?.results?.[0]?.geometry;
+
+    if (!geometry) {
+      console.warn('⚠️ Coordinates not found for location:', geoQuery);
+      return null;
+    }
+
+    return { lat: geometry.lat, lng: geometry.lng };
+  } catch (err) {
+    console.error('❌ Failed to resolve coordinates from location:', err);
+    return null;
+  }
+};
 
 export const getCoordsFromZip = async (zip: string): Promise<{ lat: number; lng: number } | null> => {
   const apiKey = '3f0b27040d8d44c7bbcb88e1b5a7d6d5'; // OpenCage API key

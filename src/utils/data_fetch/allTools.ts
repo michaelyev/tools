@@ -22,7 +22,6 @@ export async function getProducts({
     const path = [
       "http://localhost:4100/products",
       category,
-      subCategory,
       subSubcategory,
     ]
       .filter(Boolean) // Remove empty values

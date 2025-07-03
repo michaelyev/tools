@@ -112,7 +112,15 @@ export default function ProductUpdateForm({ loggedInUser, categoryOptions }) {
         }
       : {};
 
-    const shop = loggedInUser?.shop || {};
+    const shop = {
+      id: crypto.randomUUID(),
+      slug: "temp-shop-slug",
+      user: {
+        id: crypto.randomUUID(),
+        email: loggedInUser?.email || "unknown@email.com",
+        phone: ""
+      }
+    };
 
     const productData = {
       ...data,
