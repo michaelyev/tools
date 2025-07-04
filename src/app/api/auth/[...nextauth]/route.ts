@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@lib/mongodb"; // MongoDB connection
+import { verifyPassword } from "@lib/auth";
+import { User } from "@models/User.model";
 
 export const authOptions = {
   providers: [
@@ -19,21 +21,31 @@ export const authOptions = {
           console.log("Connected to MongoDB successfully");
 
           // Find the user by email
-          const user = await db.collection("users").findOne({ email: credentials.email });
+          const user = await db.collection("users").findOne({ email: credentials.email }) as User;
 
-          // Check if user exists and password matches
-          if (user && user.password === credentials.password) {
-            console.log("User found:", user);
-
-            return {
-              id: user._id.toString(),
-              email: user.email,
-              name: user.name,
-            };
+          if (!user) {
+            console.error("User not found:", credentials.email);
+            throw new Error("Invalid email or password");
           }
 
-          console.error("Invalid email or password");
-          throw new Error("Invalid email or password");
+          // Проверяем пароль с помощью bcrypt
+          const isPasswordValid = await verifyPassword(credentials.password, user.password);
+          
+          if (!isPasswordValid) {
+            console.error("Invalid password for user:", credentials.email);
+            throw new Error("Invalid email or password");
+          }
+
+          console.log("User authenticated successfully:", user.email);
+
+          return {
+            id: user._id?.toString() || "",
+            email: user.email,
+            name: user.name,
+            isBusiness: user.isBusiness || false,
+            business: user.business || null,
+            createdAt: user.createdAt,
+          };
         } catch (error) {
           console.error("Error during authentication:", error.message);
           throw new Error("Authentication failed");
@@ -48,6 +60,9 @@ export const authOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          isBusiness: user.isBusiness,
+          business: user.business,
+          createdAt: user.createdAt,
         };
       }
       return token;
@@ -56,6 +71,14 @@ export const authOptions = {
       session.user = token.user; // Pass user data to session
       return session;
     },
+  },
+  pages: {
+    signIn: '/login', // Кастомная страница входа
+    signUp: '/signup', // Кастомная страница регистрации
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 дней
   },
   secret: process.env.NEXTAUTH_SECRET, // Use environment variable for the secret
 };

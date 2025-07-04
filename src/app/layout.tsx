@@ -5,6 +5,8 @@ import StyledComponentsRegistry from "@lib/registry";
 // APP PROVIDER
 import { AppProvider } from "@context/app-context";
 import StyledContext from "@context/StyledContext";
+// AUTH PROVIDER
+import Providers from "@component/Providers";
 // THIRD PARTY CSS FILE
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -30,21 +32,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={openSans.className}>
         <StyledComponentsRegistry>
-          <AppProvider>
-            <StyledContext>
-              <Topbar />
-              <Sticky fixedOn={0} scrollDistance={300}>
-                <>
-                  <Header />
-                  <Navbar navListOpen={true} />
-                </>
-              </Sticky>
+          <Providers>
+            <AppProvider>
+              <StyledContext>
+                <Topbar />
+                <Sticky fixedOn={0} scrollDistance={300}>
+                  <>
+                    <Header />
+                    <Navbar navListOpen={true} />
+                  </>
+                </Sticky>
 
-              {children}
-              <NProgressBar />
-              <Footer1 />
-            </StyledContext>
-          </AppProvider>
+                {children}
+                <NProgressBar />
+                <Footer1 />
+              </StyledContext>
+            </AppProvider>
+          </Providers>
         </StyledComponentsRegistry>
       </body>
     </html>

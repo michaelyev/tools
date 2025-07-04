@@ -123,7 +123,7 @@ const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
 
     const newProject = {
       ...formData,
-      userName: user.name?.toLowerCase() || "unknown",
+      userName: user.name.firstName?.toLowerCase() || "unknown",
       userId: user.id,
     };
 

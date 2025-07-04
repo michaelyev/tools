@@ -30,407 +30,300 @@ const validationSchema = yup.object().shape({
     .oneOf([yup.ref('password')], 'Passwords must match')
     .required("Please confirm your password"),
   isBusiness: yup.boolean(),
-  businessName: yup.string().optional(),
-  phone: yup.string().optional(),
-  website: yup.string().url("Invalid website URL").optional(),
-  providesServices: yup.boolean(),
-  serviceCategories: yup.array().optional(),
-  businessDescription: yup.string().optional()
+  businessName: yup.string().when('isBusiness', {
+    is: true,
+    then: schema => schema.required("Business name is required for business accounts"),
+    otherwise: schema => schema.notRequired().nullable().default("")
+  }),
+  phone: yup.string().when('isBusiness', {
+    is: true,
+    then: schema => schema.required("Phone number is required for business accounts"),
+    otherwise: schema => schema.notRequired().nullable().default("")
+  }),
+  website: yup.string().url("Invalid website URL").notRequired().nullable().default("") ,
+  providesServices: yup.boolean().default(false),
+  serviceCategories: yup.array().of(yup.string()).when(['isBusiness', 'providesServices'], {
+    is: (isBusiness, providesServices) => isBusiness && providesServices,
+    then: schema => schema.min(1, "Please select at least one service category"),
+    otherwise: schema => schema.notRequired().default([])
+  }),
+  businessDescription: yup.string().when('isBusiness', {
+    is: true,
+    then: schema => schema.min(10, "Business description must be at least 10 characters").notRequired().nullable().default("") ,
+    otherwise: schema => schema.notRequired().nullable().default("")
+  }),
+  socialMedia: yup.object({
+    instagram: yup.string().notRequired().nullable().default("") ,
+    googleMaps: yup.string().notRequired().nullable().default("") ,
+    yelp: yup.string().notRequired().nullable().default("") ,
+    facebook: yup.string().notRequired().nullable().default("") ,
+  }).notRequired().default({
+    instagram: "",
+    googleMaps: "",
+    yelp: "",
+    facebook: "",
+  }),
 });
 
-export default function Signup() {
-  const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const [confirmPasswordVisibility, setConfirmPasswordVisibility] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const defaultValues = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  isBusiness: false,
+  businessName: "",
+  phone: "",
+  website: "",
+  providesServices: false,
+  serviceCategories: [],
+  businessDescription: "",
+  socialMedia: {
+    instagram: "",
+    googleMaps: "",
+    yelp: "",
+    facebook: "",
+  },
+};
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-    setValue,
-    formState: { errors, isValid },
-  } = useForm({
+export default function Signup() {
+  const { control, handleSubmit, watch, formState: { errors, isValid } } = useForm({
+    defaultValues,
     resolver: yupResolver(validationSchema),
-    defaultValues: {
-      isBusiness: false,
-      providesServices: false,
-      serviceCategories: [],
-      socialMedia: {
-        instagram: "",
-        googleMaps: "",
-        yelp: "",
-        facebook: ""
-      }
-    },
-    mode: "onChange"
+    mode: "all"
   });
+
+  // Диагностика
+  console.log('form values', watch && watch());
+  console.log('form errors', errors);
+  console.log('form isValid', isValid);
 
   const isBusiness = watch("isBusiness");
   const providesServices = watch("providesServices");
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisibility(!passwordVisibility);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setConfirmPasswordVisibility(!confirmPasswordVisibility);
-  };
-
-  const categoryOptions = [
-    { label: "Construction Tools", value: "construction-tools" },
-    { label: "Garden Equipment", value: "garden-equipment" },
-    { label: "Cleaning Supplies", value: "cleaning-supplies" },
-    { label: "Electrical Tools", value: "electrical-tools" },
-    { label: "Plumbing Tools", value: "plumbing-tools" },
-    { label: "Automotive Tools", value: "automotive-tools" }
-  ];
-
-  const handleCategoryChange = (selectedOptions) => {
-    if (selectedOptions) {
-      const values = Array.isArray(selectedOptions) 
-        ? selectedOptions.map(opt => opt.value)
-        : [selectedOptions.value];
-      setValue("serviceCategories", values);
-    } else {
-      setValue("serviceCategories", []);
-    }
-  };
-
   const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    
-    // Подготавливаем данные для отправки
-    const submitData = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      password: data.password,
-      isBusiness: data.isBusiness || false,
-      businessName: data.businessName || "",
-      phone: data.phone || "",
-      website: data.website || "",
-      socialMedia: data.socialMedia || {},
-      providesServices: data.providesServices || false,
-      serviceCategories: data.serviceCategories || [],
-      businessDescription: data.businessDescription || ""
-    };
-
-    console.log("Form submitted with data:", submitData);
-
+    const { confirmPassword, ...toSend } = data;
+    // Если не бизнес, удаляем бизнес-поля
+    if (!toSend.isBusiness) {
+      delete toSend.businessName;
+      delete toSend.phone;
+      delete toSend.website;
+      delete toSend.providesServices;
+      delete toSend.serviceCategories;
+      delete toSend.businessDescription;
+      delete toSend.socialMedia;
+    }
     try {
       const response = await fetch("/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(submitData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(toSend),
       });
-
-      const responseData = await response.json();
-      console.log("Response from server:", responseData);
-
       if (!response.ok) {
-        alert(responseData.error || "Failed to register. Try again.");
+        const error = await response.json();
+        alert("Ошибка: " + (error.error || "Не удалось создать пользователя"));
         return;
       }
-
-      alert("Registration successful! You can now log in.");
-      window.location.href = "/login";
-    } catch (error) {
-      console.error("Error during registration:", error);
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+      alert("Пользователь успешно зарегистрирован!");
+    } catch (err) {
+      alert("Ошибка сети или сервера");
     }
   };
 
   return (
     <StyledRoot mx="auto" my="2rem" boxShadow="large" borderRadius={8}>
       <form className="content" onSubmit={handleSubmit(onSubmit)}>
-        <H3 textAlign="center" mb="0.5rem">
-          Create Your Account
-        </H3>
-
-        <H5
-          fontWeight="600"
-          fontSize="12px"
-          color="gray.800"
-          textAlign="center"
-          mb="2.25rem"
-        >
-          Join our community of tool enthusiasts and businesses
-        </H5>
-
-        {/* Personal Information Section */}
-        <Box mb="2rem">
-          <H5 mb="1rem" color="primary.main">
-            <Icon mr="0.5rem" size="20px">person</Icon>
-            Personal Information
-          </H5>
-          <Grid container spacing={2}>
-            <Grid item sm={6} xs={12}>
-              <TextField
-                fullwidth
-                label="First Name"
-                placeholder="John"
-                {...register("firstName")}
-                errorText={errors.firstName?.message}
-              />
-            </Grid>
-            <Grid item sm={6} xs={12}>
-              <TextField
-                fullwidth
-                label="Last Name"
-                placeholder="Doe"
-                {...register("lastName")}
-                errorText={errors.lastName?.message}
-              />
-            </Grid>
+        <Grid container spacing={2}>
+          <Grid item md={6} xs={12}>
+            <Controller
+              name="firstName"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} fullwidth label="First Name" errorText={errors.firstName?.message} />
+              )}
+            />
           </Grid>
-
-          <TextField
-            fullwidth
-            mt="1rem"
-            label="Email Address"
-            type="email"
-            placeholder="john.doe@example.com"
-            {...register("email")}
-            errorText={errors.email?.message}
-          />
-
-          <Grid container spacing={2} mt="1rem">
-            <Grid item sm={6} xs={12}>
-              <TextField
-                fullwidth
-                label="Password"
-                placeholder="*********"
-                type={passwordVisibility ? "text" : "password"}
-                {...register("password")}
-                errorText={errors.password?.message}
-                endAdornment={
-                  <IconButton
-                    p="0.25rem"
-                    mr="0.25rem"
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                  >
-                    <Icon variant="small" defaultcolor="currentColor">
-                      {passwordVisibility ? "eye-alt" : "eye"}
-                    </Icon>
-                  </IconButton>
-                }
-              />
-            </Grid>
-            <Grid item sm={6} xs={12}>
-              <TextField
-                fullwidth
-                label="Confirm Password"
-                placeholder="*********"
-                type={confirmPasswordVisibility ? "text" : "password"}
-                {...register("confirmPassword")}
-                errorText={errors.confirmPassword?.message}
-                endAdornment={
-                  <IconButton
-                    p="0.25rem"
-                    mr="0.25rem"
-                    type="button"
-                    onClick={toggleConfirmPasswordVisibility}
-                  >
-                    <Icon variant="small" defaultcolor="currentColor">
-                      {confirmPasswordVisibility ? "eye-alt" : "eye"}
-                    </Icon>
-                  </IconButton>
-                }
-              />
-            </Grid>
+          <Grid item md={6} xs={12}>
+            <Controller
+              name="lastName"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} fullwidth label="Last Name" errorText={errors.lastName?.message} />
+              )}
+            />
           </Grid>
-        </Box>
-
-        {/* Business Toggle */}
-        <Box mb="2rem">
-          <Controller
-            name="isBusiness"
-            control={control}
-            render={({ field }) => (
-              <CheckBox
-                label={
-                  <FlexBox alignItems="center">
-                    <Icon mr="0.5rem" size="18px">business</Icon>
-                    I'm registering as a business
-                  </FlexBox>
-                }
-                checked={field.value}
-                onChange={(e) => field.onChange(e.target.checked)}
-              />
-            )}
-          />
-        </Box>
-
-        {/* Business Information Section */}
-        {isBusiness && (
-          <Box mb="2rem">
-            <H5 mb="1rem" color="primary.main">
-              <Icon mr="0.5rem" size="20px">store</Icon>
-              Business Information
-            </H5>
-            
-            <TextField
-              fullwidth
-              mb="1rem"
-              label="Business Name"
-              placeholder="Your Business Name"
-              {...register("businessName")}
-              errorText={errors.businessName?.message}
+          <Grid item xs={12}>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} fullwidth label="Email" errorText={errors.email?.message} />
+              )}
             />
-
-            <TextField
-              fullwidth
-              mb="1rem"
-              label="Phone Number"
-              placeholder="(555) 123-4567"
-              {...register("phone")}
-              errorText={errors.phone?.message}
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} type="password" fullwidth label="Password" errorText={errors.password?.message} />
+              )}
             />
-
-            <TextField
-              fullwidth
-              mb="1rem"
-              label="Website (Optional)"
-              placeholder="https://yourbusiness.com"
-              {...register("website")}
-              errorText={errors.website?.message}
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} type="password" fullwidth label="Confirm Password" errorText={errors.confirmPassword?.message} />
+              )}
             />
-
-            {/* Social Media Links */}
-            <H6 mb="0.75rem" color="gray.700">
-              <Icon mr="0.5rem" size="16px">share</Icon>
-              Social Media Links (Optional)
-            </H6>
-            <Grid container spacing={2} mb="1rem">
-              <Grid item sm={6} xs={12}>
-                <TextField
-                  fullwidth
-                  label="Instagram"
-                  placeholder="@yourbusiness"
-                  {...register("socialMedia.instagram")}
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="isBusiness"
+              control={control}
+              render={({ field }) => (
+                <CheckBox
+                  checked={field.value}
+                  onChange={e => field.onChange(e.target.checked)}
+                  label="Registering as a business?"
+                />
+              )}
+            />
+          </Grid>
+          {isBusiness && (
+            <>
+              <Grid item xs={12}>
+                <Controller
+                  name="businessName"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} fullwidth label="Business Name" errorText={errors.businessName?.message} />
+                  )}
                 />
               </Grid>
-              <Grid item sm={6} xs={12}>
-                <TextField
-                  fullwidth
-                  label="Google Maps"
-                  placeholder="Google Maps URL"
-                  {...register("socialMedia.googleMaps")}
+              <Grid item xs={12}>
+                <Controller
+                  name="phone"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} fullwidth label="Business Phone" errorText={errors.phone?.message} />
+                  )}
                 />
               </Grid>
-              <Grid item sm={6} xs={12}>
-                <TextField
-                  fullwidth
-                  label="Yelp"
-                  placeholder="Yelp Business URL"
-                  {...register("socialMedia.yelp")}
+              <Grid item xs={12}>
+                <Controller
+                  name="website"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} fullwidth label="Business Website" errorText={errors.website?.message} />
+                  )}
                 />
               </Grid>
-              <Grid item sm={6} xs={12}>
-                <TextField
-                  fullwidth
-                  label="Facebook"
-                  placeholder="Facebook Page URL"
-                  {...register("socialMedia.facebook")}
+              <Grid item xs={12}>
+                <Controller
+                  name="providesServices"
+                  control={control}
+                  render={({ field }) => (
+                    <CheckBox
+                      checked={field.value}
+                      onChange={e => field.onChange(e.target.checked)}
+                      label="Does your business provide services?"
+                    />
+                  )}
                 />
               </Grid>
-            </Grid>
-
-            {/* Services Toggle */}
-            <Box mb="1rem">
-              <Controller
-                name="providesServices"
-                control={control}
-                render={({ field }) => (
-                  <CheckBox
-                    label={
-                      <FlexBox alignItems="center">
-                        <Icon mr="0.5rem" size="18px">build</Icon>
-                        We provide services
-                      </FlexBox>
-                    }
-                    checked={field.value}
-                    onChange={(e) => field.onChange(e.target.checked)}
+              {providesServices && (
+                <Grid item xs={12}>
+                  <Controller
+                    name="serviceCategories"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        fullwidth
+                        label="Service Categories"
+                        placeholder="Select categories"
+                        multiple
+                        options={[
+                          { label: "Plumbing", value: "plumbing" },
+                          { label: "Electrical", value: "electrical" },
+                          { label: "Cleaning", value: "cleaning" },
+                          { label: "Landscaping", value: "landscaping" },
+                          { label: "Other", value: "other" },
+                        ]}
+                        errorText={errors.serviceCategories?.message}
+                        onChange={val => field.onChange(val)}
+                        value={field.value}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Box>
-
-            {/* Service Categories */}
-            {providesServices && (
-              <Box mb="1rem">
-                <Select
-                  label="Service Categories"
-                  options={categoryOptions}
-                  onChange={handleCategoryChange}
-                  isMulti
-                  placeholder="Select categories..."
-                  errorText={errors.serviceCategories?.message}
+                </Grid>
+              )}
+              <Grid item xs={12}>
+                <Controller
+                  name="businessDescription"
+                  control={control}
+                  render={({ field }) => (
+                    <TextArea {...field} fullwidth label="Business Description" errorText={errors.businessDescription?.message} />
+                  )}
                 />
-              </Box>
-            )}
-
-            {/* Business Description */}
-            <TextArea
-              fullwidth
-              label="Business Description"
-              placeholder="Tell us about your business, services, and what makes you unique..."
-              rows={4}
-              {...register("businessDescription")}
-              errorText={errors.businessDescription?.message}
-            />
-          </Box>
-        )}
-
-        {/* Submit Button */}
+              </Grid>
+              <Grid item xs={12}>
+                <h4>Social Media Links</h4>
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <Controller
+                  name="socialMedia.instagram"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} fullwidth label="Instagram" errorText={errors.socialMedia?.instagram?.message} />
+                  )}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <Controller
+                  name="socialMedia.googleMaps"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} fullwidth label="Google Maps" errorText={errors.socialMedia?.googleMaps?.message} />
+                  )}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <Controller
+                  name="socialMedia.yelp"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} fullwidth label="Yelp" errorText={errors.socialMedia?.yelp?.message} />
+                  )}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <Controller
+                  name="socialMedia.facebook"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField {...field} fullwidth label="Facebook" errorText={errors.socialMedia?.facebook?.message} />
+                  )}
+                />
+              </Grid>
+            </>
+          )}
+        </Grid>
         <Button
-          mb="1.65rem"
+          mt="2rem"
           variant="contained"
           color="primary"
           type="submit"
           fullwidth
           size="large"
-          disabled={isSubmitting || !isValid}
+          disabled={!isValid}
         >
-          {isSubmitting ? (
-            <FlexBox alignItems="center">
-              <Icon mr="0.5rem" size="18px" className="spin">refresh</Icon>
-              Creating Account...
-            </FlexBox>
-          ) : (
-            "Create Account"
-          )}
+          Create Account
         </Button>
-
-        <Divide />
-
-        <SocialLinks />
       </form>
-
-      <FlexBox justifyContent="center" bg="gray.200" py="19px">
-        <SemiSpan>Already have an account?</SemiSpan>
-        <Link href="/login">
-          <H6 ml="0.5rem" borderBottom="1px solid" borderColor="gray.900">
-            Log in
-          </H6>
-        </Link>
-      </FlexBox>
-
-      <style jsx>{`
-        .spin {
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </StyledRoot>
   );
 }

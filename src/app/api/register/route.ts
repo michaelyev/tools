@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@lib/mongodb";
+import { hashPassword, validateEmail, validatePassword } from "@lib/auth";
+import { User } from "@models/User.model";
 
 export async function POST(request: Request) {
   try {
@@ -21,9 +23,24 @@ export async function POST(request: Request) {
       businessDescription
     } = body;
 
+    // Валидация обязательных полей
     if (!firstName || !lastName || !email || !password) {
       console.log("Missing required fields:", { firstName, lastName, email, password: !!password });
       return NextResponse.json({ error: "Name, email and password are required" }, { status: 400 });
+    }
+
+    // Валидация email
+    if (!validateEmail(email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+    }
+
+    // Валидация пароля
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      return NextResponse.json({ 
+        error: "Password validation failed", 
+        details: passwordValidation.errors 
+      }, { status: 400 });
     }
 
     const client = await clientPromise;
@@ -36,14 +53,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User already exists" }, { status: 400 });
     }
 
+    // Хешируем пароль
+    const hashedPassword = await hashPassword(password);
+
     // Подготавливаем данные пользователя
-    const userData = {
+    const userData: User = {
       name: {
         firstName,
         lastName
       },
       email,
-      password,
+      password: hashedPassword,
       createdAt: new Date(),
       isBusiness: isBusiness || false,
     };
@@ -54,14 +74,14 @@ export async function POST(request: Request) {
         name: businessName || "",
         phone: phone || "",
         website: website || "",
-        socialMedia: socialMedia || {},
         providesServices: providesServices || false,
         serviceCategories: serviceCategories || [],
-        description: businessDescription || ""
+        description: businessDescription || "",
+        socialMedia: socialMedia || {},
       };
     }
 
-    console.log("Saving user data:", userData);
+    console.log("Saving user data:", { ...userData, password: "[HIDDEN]" });
 
     // Сохраняем нового пользователя
     const result = await db.collection("users").insertOne(userData);
