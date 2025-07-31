@@ -18,11 +18,30 @@ import {
 } from "@utils/data_fetch/projectFetch";
 import { getUserLocation } from "@utils/location_fetch/location_fetch";
 
-const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
+// Define interfaces for the component props
+interface User {
+  id: string;
+  name: {
+    firstName?: string;
+    lastName?: string;
+  };
+}
+
+interface ProjectsClientProps {
+  user?: User;
+  location?: string[];
+  initialCategory?: string;
+}
+
+const ProjectsClient: React.FC<ProjectsClientProps> = ({ 
+  user, 
+  location: routeLocation, 
+  initialCategory 
+}) => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
     initialCategory ? [initialCategory] : []
   );
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<any[]>([]);
   const [zip, setZip] = useState("");
   const [radius, setRadius] = useState(50);
   const [page, setPage] = useState(1);
@@ -182,7 +201,6 @@ const ProjectsClient = ({ user, location: routeLocation, initialCategory }) => {
         <ProjectArea>
           {selectedTypes.length > 0 && (
             <SelectedFilters
-              location={finalLocation?.city ?? ""}
               selectedTypes={selectedTypes}
               onRemove={removeFilter}
             />

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -20,6 +20,7 @@ import Box from "@component/Box";
 import Divide from "./components/Divide";
 import SocialLinks from "./components/SocialLinks";
 import { StyledRoot } from "./styles";
+import { getUserLocation, getCoordsFromZip } from "@utils/location_fetch/location_fetch";
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -29,7 +30,7 @@ const validationSchema = yup.object().shape({
   confirmPassword: yup.string()
     .oneOf([yup.ref('password')], 'Passwords must match')
     .required("Please confirm your password"),
-  isBusiness: yup.boolean(),
+  isBusiness: yup.boolean().default(false),
   businessName: yup.string().when('isBusiness', {
     is: true,
     then: schema => schema.required("Business name is required for business accounts"),
@@ -63,6 +64,12 @@ const validationSchema = yup.object().shape({
     yelp: "",
     facebook: "",
   }),
+  useAutoLocation: yup.boolean().default(true),
+  zip: yup.string().when("useAutoLocation", {
+    is: false,
+    then: (schema) => schema.required("ZIP Code is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
 
 const defaultValues = {
@@ -84,14 +91,19 @@ const defaultValues = {
     yelp: "",
     facebook: "",
   },
+  useAutoLocation: true,
+  zip: "",
 };
 
 export default function Signup() {
-  const { control, handleSubmit, watch, formState: { errors, isValid } } = useForm({
+  const { control, handleSubmit, watch, formState: { errors, isValid }, setValue } = useForm({
     defaultValues,
     resolver: yupResolver(validationSchema),
     mode: "all"
   });
+
+  const [location, setLocation] = useState(null);
+  const [locationLoading, setLocationLoading] = useState(false);
 
   // Диагностика
   console.log('form values', watch && watch());
@@ -100,9 +112,49 @@ export default function Signup() {
 
   const isBusiness = watch("isBusiness");
   const providesServices = watch("providesServices");
+  const useAutoLocation = watch("useAutoLocation");
+
+  useEffect(() => {
+    if (useAutoLocation) {
+      setLocationLoading(true);
+      getUserLocation().then((loc) => {
+        setLocationLoading(false);
+        if (loc) {
+          setLocation({ latitude: loc.latitude, longitude: loc.longitude });
+          setValue("zip", loc.zip); // display only
+        } else {
+          alert("Could not detect your location. Please enter ZIP manually.");
+          setValue("useAutoLocation", false);
+        }
+      }).catch((error) => {
+        console.error("Location detection error:", error);
+        setLocationLoading(false);
+        alert("Could not detect your location. Please enter ZIP manually.");
+        setValue("useAutoLocation", false);
+      });
+    }
+  }, [useAutoLocation, setValue]);
+
+  const handleZipInput = async (zip) => {
+    const coords = await getCoordsFromZip(zip);
+    if (!coords) {
+      alert("Invalid ZIP Code. Try again.");
+      return;
+    }
+    setLocation({ latitude: coords.lat, longitude: coords.lng });
+  };
 
   const onSubmit = async (data) => {
     const { confirmPassword, ...toSend } = data;
+    
+    // Add location data if available
+    if (location) {
+      toSend.location = {
+        type: "Point",
+        coordinates: [location.longitude, location.latitude],
+      };
+    }
+    
     // Если не бизнес, удаляем бизнес-поля
     if (!toSend.isBusiness) {
       delete toSend.businessName;
@@ -179,6 +231,73 @@ export default function Signup() {
               )}
             />
           </Grid>
+
+          {/* Location Section */}
+          <Grid item xs={12}>
+            <H6 mb="16px">📍 Location Information</H6>
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="useAutoLocation"
+              control={control}
+              render={({ field }) => (
+                <CheckBox
+                  checked={field.value}
+                  onChange={e => {
+                    console.log("Checkbox clicked:", e.target.checked);
+                    field.onChange(e.target.checked);
+                    // If user is enabling auto location, trigger detection immediately
+                    if (e.target.checked && !location) {
+                      console.log("Starting location detection...");
+                      setLocationLoading(true);
+                      getUserLocation().then((loc) => {
+                        console.log("Location detection result:", loc);
+                        setLocationLoading(false);
+                        if (loc) {
+                          setLocation({ latitude: loc.latitude, longitude: loc.longitude });
+                          setValue("zip", loc.zip); // display only
+                        } else {
+                          alert("Could not detect your location. Please enter ZIP manually.");
+                          setValue("useAutoLocation", false);
+                        }
+                      }).catch((error) => {
+                        console.error("Location detection error:", error);
+                        setLocationLoading(false);
+                        alert("Could not detect your location. Please enter ZIP manually.");
+                        setValue("useAutoLocation", false);
+                      });
+                    }
+                  }}
+                  label={locationLoading ? "📡 Detecting your location..." : "🛰 Use Automatic Location Detection"}
+                />
+              )}
+            />
+          </Grid>
+          {!useAutoLocation && (
+            <Grid item xs={12}>
+              <Controller
+                name="zip"
+                control={control}
+                render={({ field }) => (
+                  <TextField 
+                    {...field} 
+                    fullwidth 
+                    label="📮 ZIP Code" 
+                    errorText={errors.zip?.message}
+                    onBlur={(e) => handleZipInput(e.target.value)}
+                  />
+                )}
+              />
+            </Grid>
+          )}
+          {location?.latitude && (
+            <Grid item xs={12}>
+              <SemiSpan fontSize="0.875rem" mb="6px">
+                📍 Coordinates: {location.latitude.toFixed(5)}, {location.longitude.toFixed(5)}
+              </SemiSpan>
+            </Grid>
+          )}
+
           <Grid item xs={12}>
             <Controller
               name="isBusiness"
@@ -242,10 +361,9 @@ export default function Signup() {
                     render={({ field }) => (
                       <Select
                         {...field}
-                        fullwidth
                         label="Service Categories"
                         placeholder="Select categories"
-                        multiple
+                        isMulti
                         options={[
                           { label: "Plumbing", value: "plumbing" },
                           { label: "Electrical", value: "electrical" },

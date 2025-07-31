@@ -10,6 +10,10 @@ declare module "next-auth" {
         lastName: string;
       };
       isBusiness: boolean;
+      location?: {
+        type: "Point";
+        coordinates: [number, number]; // [longitude, latitude]
+      };
       business?: {
         name: string;
         phone: string;
@@ -36,6 +40,10 @@ declare module "next-auth" {
       lastName: string;
     };
     isBusiness: boolean;
+    location?: {
+      type: "Point";
+      coordinates: [number, number]; // [longitude, latitude]
+    };
     business?: {
       name: string;
       phone: string;
@@ -64,6 +72,10 @@ declare module "next-auth/jwt" {
         lastName: string;
       };
       isBusiness: boolean;
+      location?: {
+        type: "Point";
+        coordinates: [number, number]; // [longitude, latitude]
+      };
       business?: {
         name: string;
         phone: string;

@@ -16,7 +16,7 @@ type ShopCard1Props = {
   name: string;
   phone: string;
   rating: number;
-  imgUrl: string;
+  /* imgUrl: string; */
   address: string;
   shopUrl: string;
   coverImgUrl: string;
@@ -26,31 +26,31 @@ type ShopCard1Props = {
 export default function ShopCard1({
   name,
   phone,
-  rating,
-  imgUrl,
-  address,
+  /* rating, */
+  /* imgUrl, */
+  /* address, */
   shopUrl,
-  coverImgUrl
+  /* coverImgUrl */
 }: ShopCard1Props) {
   return (
-    <ShopCard1Wrapper overflow="hidden" coverImgUrl={coverImgUrl}>
+    <ShopCard1Wrapper overflow="hidden" /* coverImgUrl={coverImgUrl} */>
       <div className="black-box">
         <H3 fontWeight="600" mb="8px">
           {name}
         </H3>
 
-        <Box mb="13px">
+        {/* <Box mb="13px">
           <Rating size="small" value={rating || 0} outof={5} color="warn" />
-        </Box>
+        </Box> */}
 
         <FlexBox mb="8px">
           <Icon defaultcolor="currentColor" size="15px" mt="5px">
             map-pin-2
           </Icon>
 
-          <SemiSpan color="white" ml="12px">
+          {/* <SemiSpan color="white" ml="12px">
             {address}
-          </SemiSpan>
+          </SemiSpan> */}
         </FlexBox>
 
         <FlexBox>
@@ -65,7 +65,7 @@ export default function ShopCard1({
       </div>
 
       <FlexBox pl="30px" pr="18px" justifyContent="space-between">
-        <Avatar src={imgUrl} size={64} mt="-32px" border="4px solid" borderColor="gray.100" />
+        {/* <Avatar src={imgUrl} size={64} mt="-32px" border="4px solid" borderColor="gray.100" /> */}
         <Link href={shopUrl}>
           <IconButton my="0.25rem">
             <Icon defaultcolor="auto">arrow-long-right</Icon>

@@ -3,6 +3,23 @@ import { workTypes } from '@utils/data_fetch/projectFetch';
 import React from 'react';
 import styled from 'styled-components';
 
+// Define interfaces for the component props
+interface FormData {
+  title?: string;
+  description?: string;
+  zip?: string;
+  price?: string;
+  category?: string;
+}
+
+interface AddProjectModalProps {
+  formData?: FormData;
+  onClose: () => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onSubmit: () => void;
+  isLoading?: boolean;
+}
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -73,7 +90,13 @@ const ModalButton = styled.button`
   cursor: pointer;
 `;
 
-const AddProjectModal = ({ formData = {}, onClose, onChange, onSubmit, isLoading }) => {
+const AddProjectModal: React.FC<AddProjectModalProps> = ({ 
+  formData = {}, 
+  onClose, 
+  onChange, 
+  onSubmit, 
+  isLoading 
+}) => {
 
   return (
     <ModalOverlay onClick={onClose}>

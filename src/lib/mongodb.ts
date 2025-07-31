@@ -22,4 +22,22 @@ if (process.env.NODE_ENV === "development") {
   clientPromise = client.connect();
 }
 
+// Function to create geospatial indexes for location-based queries
+export async function createLocationIndexes() {
+  try {
+    const client = await clientPromise;
+    const db = client.db("rent-tool");
+    
+    // Create geospatial index on users collection for location queries
+    await db.collection("users").createIndex(
+      { "location": "2dsphere" },
+      { background: true }
+    );
+    
+    console.log("✅ Location indexes created successfully");
+  } catch (error) {
+    console.error("❌ Error creating location indexes:", error);
+  }
+}
+
 export default clientPromise;

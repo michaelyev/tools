@@ -20,7 +20,7 @@ import Section13 from "@sections/market-1/Section13";
 import Facts from "@component/facts/Facts";
 import { getProducts } from "@utils/data_fetch/allTools";
 import Projects from "@component/Orders/Projects";
-import { authOptions } from './api/auth/[...nextauth]/route';
+import { authOptions } from "./api/auth/[...nextauth]/authOptions";
 import { fetchAllProjects } from '@utils/data_fetch/projectFetch';
 
 export default async function Home() {

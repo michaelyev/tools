@@ -52,4 +52,4 @@ const uniqueProudcts = Array.from(uniqueProductMap.values());
 // get the all slugs
 const slugs = uniqueProudcts.map((item) => ({ params: { slug: item.slug } }));
 
-export { uniqueProudcts, slugs };
+export { uniqueProudcts, slugs, productList };

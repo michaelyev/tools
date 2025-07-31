@@ -11,10 +11,10 @@ import { getCoordsFromLocation } from "@utils/location_fetch/location_fetch";
 import { findSeoUrl } from "@utils/data_fetch/get_seo_url";
 
 type ProductSearchResultProps = {
-  params: {
+  params: Promise<{
     search?: string[]; // array of [category, subcategory, subSubcategory]
-  };
-  searchParams?: {
+  }>;
+  searchParams?: Promise<{
     query?: string;
     page?: string;
     email?: string;
@@ -24,11 +24,12 @@ type ProductSearchResultProps = {
     timeRange?: string;
     startDate?: string;
     endDate?: string;
-  };
+  }>;
 };
 
 export async function generateMetadata({ params }: ProductSearchResultProps): Promise<Metadata> {
-  const pathname = `/products/${(params.search || []).join("/")}`;
+  const resolvedParams = await params;
+  const pathname = `/products/${(resolvedParams.search || []).join("/")}`;
   const seoContent = await getProductSeoContent(pathname);
 
   if (!seoContent) {
@@ -47,15 +48,17 @@ export default async function ProductSearchResult({
   params,
   searchParams,
 }: ProductSearchResultProps) {
-  const currentPage = Number(searchParams?.page) || 1;
-  const query = searchParams?.query || "";
-  const searchSegments = params.search || [];
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
+  const query = resolvedSearchParams?.query || "";
+  const searchSegments = resolvedParams.search || [];
 
   let category: string | undefined;
   let subCategory: string | undefined;
   let subSubCategory: string | undefined;
-  let lat = searchParams?.lat ? parseFloat(searchParams.lat) : undefined;
-  let lng = searchParams?.lng ? parseFloat(searchParams.lng) : undefined;
+  let lat = resolvedSearchParams?.lat ? parseFloat(resolvedSearchParams.lat) : undefined;
+  let lng = resolvedSearchParams?.lng ? parseFloat(resolvedSearchParams.lng) : undefined;
   let pathname = `/${searchSegments.join("/")}`;
 
   // Check if the current URL slug matches a predefined SEO URL
@@ -92,10 +95,10 @@ export default async function ProductSearchResult({
       q: query,
       lat,
       lng,
-      radius: searchParams?.radius ? parseFloat(searchParams.radius) : undefined,
-      timeRange: searchParams?.timeRange,
-      startDate: searchParams?.startDate,
-      endDate: searchParams?.endDate,
+      radius: resolvedSearchParams?.radius ? parseFloat(resolvedSearchParams.radius) : undefined,
+      timeRange: resolvedSearchParams?.timeRange,
+      startDate: resolvedSearchParams?.startDate,
+      endDate: resolvedSearchParams?.endDate,
     }),
     getProductSeoContent(pathname),
   ]);

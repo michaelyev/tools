@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@lib/mongodb";
+import clientPromise, { createLocationIndexes } from "@lib/mongodb";
 import { hashPassword, validateEmail, validatePassword } from "@lib/auth";
 import { User } from "@models/User.model";
 
@@ -20,7 +20,8 @@ export async function POST(request: Request) {
       socialMedia,
       providesServices,
       serviceCategories,
-      businessDescription
+      businessDescription,
+      location
     } = body;
 
     // Валидация обязательных полей
@@ -68,6 +69,15 @@ export async function POST(request: Request) {
       isBusiness: isBusiness || false,
     };
 
+    // Добавляем данные о местоположении если они есть
+    if (location && location.coordinates && location.coordinates.length === 2) {
+      userData.location = {
+        type: "Point",
+        coordinates: location.coordinates
+      };
+      console.log("Adding location data:", userData.location);
+    }
+
     // Добавляем бизнес-данные если это бизнес
     if (isBusiness) {
       userData.business = {
@@ -85,6 +95,11 @@ export async function POST(request: Request) {
 
     // Сохраняем нового пользователя
     const result = await db.collection("users").insertOne(userData);
+
+    // Create location indexes if this is the first user or if location data is present
+    if (location && location.coordinates) {
+      await createLocationIndexes();
+    }
 
     console.log("User registered successfully:", result.insertedId);
 

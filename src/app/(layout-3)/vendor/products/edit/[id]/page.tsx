@@ -27,10 +27,10 @@ const categoryOptions = [
   { label: "Work Light", value: "work-light" },
 ];
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
   const user = await getUserSession();
-  const product = await getProductById(params.id);
-
+  const product = await getProductById(resolvedParams.id);
 
   const HEADER_LINK = (
     <Link href="/vendor/products">

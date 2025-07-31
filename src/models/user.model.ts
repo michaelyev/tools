@@ -8,6 +8,10 @@ export interface User {
   password: string;
   createdAt: Date;
   isBusiness: boolean;
+  location?: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
   business?: {
     name: string;
     phone: string;
@@ -32,6 +36,10 @@ export interface UserSession {
     lastName: string;
   };
   isBusiness: boolean;
+  location?: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
   business?: {
     name: string;
     phone: string;

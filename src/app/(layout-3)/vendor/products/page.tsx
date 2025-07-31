@@ -6,7 +6,7 @@ import { H5 } from "@component/Typography";
 import DashboardPageHeader from "@component/layout/DashboardPageHeader";
 import { ProductList } from "@sections/vendor-dashboard/products";
 import { getServerSession } from "next-auth";
-import { authOptions } from '../../../api/auth/[...nextauth]/route'; // Update path if needed
+import { authOptions } from '../../../api/auth/[...nextauth]/authOptions'; // Update path if needed
 import { getProducts } from "@utils/data_fetch/allTools";
 import { getVendorProducts } from "@utils/data_fetch/vendorPostedProducts";
 

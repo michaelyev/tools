@@ -6,20 +6,35 @@ export const getUserLocation = async (): Promise<{
 } | null> => {
   // 1. Пытаемся получить геолокацию через IP без запроса у пользователя
   try {
-    const res = await fetch('https://ipapi.co/json/');
-    const data = await res.json();
+    // Try multiple IP geolocation services
+    let data;
+    
+    // First try ipapi.co
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      data = await res.json();
+      if (data.error) throw new Error('Rate limited');
+    } catch (err) {
+      console.warn('⚠️ ipapi.co failed, trying alternative service');
+      // Fallback to ipinfo.io
+      const res2 = await fetch('https://ipinfo.io/json');
+      data = await res2.json();
+    }
 
-    if (!data || !data.city || !data.latitude || !data.longitude || !data.postal) {
+    if (!data || !data.city || !data.loc) {
       throw new Error('Incomplete IP data');
     }
+
+    // Parse coordinates from ipinfo.io format (lat,lng)
+    const [latitude, longitude] = data.loc.split(',').map(Number);
 
     console.log('🌐 IP-based location:', data);
 
     return {
-      latitude: data.latitude,
-      longitude: data.longitude,
+      latitude,
+      longitude,
       city: data.city,
-      zip: data.postal,
+      zip: data.postal || 'Unknown',
     };
   } catch (err) {
     console.warn('⚠️ IP geolocation failed, falling back to navigator.geolocation');

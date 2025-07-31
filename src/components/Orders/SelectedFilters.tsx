@@ -2,6 +2,12 @@ import { workTypes } from "@utils/data_fetch/projectFetch";
 import React from "react";
 import styled from "styled-components";
 
+// Define interface for the component props
+interface SelectedFiltersProps {
+  selectedTypes: string[];
+  onRemove: (type: string) => void;
+}
+
 const SelectedFiltersWrapper = styled.div`
   display: flex;
   gap: 0.5rem;
@@ -28,7 +34,7 @@ const CloseTag = styled.span`
   font-weight: bold;
 `;
 
-const SelectedFilters = ({ selectedTypes, onRemove }) => {
+const SelectedFilters: React.FC<SelectedFiltersProps> = ({ selectedTypes, onRemove }) => {
   return (
     <SelectedFiltersWrapper>
       {selectedTypes.map((typeValue) => {

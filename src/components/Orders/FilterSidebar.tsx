@@ -4,6 +4,24 @@ import styled from 'styled-components';
 import { getUserLocation, getZipFromCity } from '@utils/location_fetch/location_fetch';
 import { workTypes } from '@utils/data_fetch/projectFetch';
 
+// Define interface for the component props
+interface Location {
+  city: string;
+  state: string;
+}
+
+interface FilterSidebarProps {
+  selectedTypes: string[];
+  onChange: (type: string) => void;
+  onAddClick: () => void;
+  zip: string;
+  onZipChange: (zip: string) => void;
+  radius: number;
+  onRadiusChange: (radius: number) => void;
+  onSearchClick: (zip: string, radius: number) => void;
+  location?: Location;
+}
+
 const Sidebar = styled.div`width: 250px; @media (max-width: 768px) { width: 100%; }`;
 const AddButton = styled.button`background-color: #e0e0e0; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin-bottom: 1rem;`;
 const CheckboxList = styled.div`display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;`;
@@ -15,7 +33,7 @@ const RadiusInput = styled.input`width: 100%;`;
 const ClearButton = styled.button`margin-top: 1rem; padding: 0.5rem 1rem; background-color: #f44336; color: white; border: none; border-radius: 8px; cursor: pointer;`;
 const LocationCheckbox = styled.label`display: flex; align-items: center; margin-top: 0.5rem; font-size: 14px; color: #555; gap: 0.5rem;`;
 
-const FilterSidebar = ({
+const FilterSidebar: React.FC<FilterSidebarProps> = ({
   selectedTypes,
   onChange,
   onAddClick,

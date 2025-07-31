@@ -1,6 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
 
+// Define the Project interface
+interface Project {
+  id?: string;
+  price?: number | string;
+  description?: string;
+  city?: string;
+  neighborhood?: string;
+  zip?: string;
+  createdAt?: string | Date;
+  userName?: string;
+}
+
+interface ProjectCardProps {
+  project: Project;
+}
+
 const Card = styled.div`
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -85,14 +101,29 @@ const UserStamp = styled.div`
   color: #888;
 `;
 
-const ProjectCard = ({ project }) => {
-  const formattedDate = new Date(project.createdAt).toLocaleString(undefined, {
-    weekday: 'short',
-    hour: 'numeric',
-    minute: '2-digit',
-    month: 'short',
-    day: 'numeric',
-  });
+const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+  // Safe date formatting with error handling
+  const getFormattedDate = () => {
+    try {
+      if (!project.createdAt) return 'Date not available';
+      
+      const date = new Date(project.createdAt);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      return date.toLocaleString(undefined, {
+        weekday: 'short',
+        hour: 'numeric',
+        minute: '2-digit',
+        month: 'short',
+        day: 'numeric',
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Date not available';
+    }
+  };
+
+  const formattedDate = getFormattedDate();
 
   return (
     <Card>
